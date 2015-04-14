@@ -1,0 +1,25 @@
+c:\users\andrew\documents\visual studio 2010\Projects\ES_classification\ES_classification\obj\x86\Debug\ES_classification.mainForm.resources
+c:\users\andrew\documents\visual studio 2010\Projects\ES_classification\ES_classification\obj\x86\Debug\ES_classification.Properties.Resources.resources
+c:\users\andrew\documents\visual studio 2010\Projects\ES_classification\ES_classification\obj\x86\Debug\ES_classification.csproj.GenerateResource.Cache
+c:\users\andrew\documents\visual studio 2010\Projects\ES_classification\ES_classification\bin\Debug\ES_classification.exe
+c:\users\andrew\documents\visual studio 2010\Projects\ES_classification\ES_classification\bin\Debug\ES_classification.pdb
+c:\users\andrew\documents\visual studio 2010\Projects\ES_classification\ES_classification\obj\x86\Debug\ES_classification.exe
+c:\users\andrew\documents\visual studio 2010\Projects\ES_classification\ES_classification\obj\x86\Debug\ES_classification.pdb
+C:\Users\Andrew\documents\visual studio 2010\Projects\ES_classification\ES_classification\obj\x86\Debug\ES_classification.SelectOutcomeWindow.resources
+C:\Users\Andrew\documents\visual studio 2010\Projects\ES_classification\ES_classification\obj\x86\Debug\ES_classification.csprojResolveAssemblyReference.cache
+H:\ES_classification\ES_classification\obj\x86\Debug\ES_classification.exe
+H:\ES_classification\ES_classification\obj\x86\Debug\ES_classification.pdb
+E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.exe
+E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.pdb
+E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\bin\Debug\ES_classification.exe
+E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\bin\Debug\ES_classification.pdb
+E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.mainForm.resources
+E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.Properties.Resources.resources
+E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.SelectOutcomeWindow.resources
+E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.csproj.GenerateResource.Cache
+E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.AddQuestionForm.resources
+E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.StartForm.resources
+E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\Interop.ADOX.dll
+E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.csproj.ResolveComReference.cache
+E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.AddOutcomeForm.resources
+E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.KBEditForm.resources
