@@ -15,7 +15,7 @@ namespace ES_classification
         public SelectOutcomeWindow(DBWorker dbWorker)
         {
             InitializeComponent();
-            main = this.Owner as MainForm;
+
             DataSet dSetOutcome = dbWorker.getDataSetOutcome();
             DataTable dTable = dSetOutcome.Tables[0];
             dgvOutcome.DataSource = dTable;
@@ -31,7 +31,9 @@ namespace ES_classification
         {
             int selectedRow = dgvOutcome.SelectedCells[0].RowIndex;
 
+            main = this.Owner as MainForm;
             main.getIdOfOutcome = (int)dgvOutcome[0, selectedRow].Value;
+
             this.Close();
         }
 

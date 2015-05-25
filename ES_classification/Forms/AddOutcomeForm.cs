@@ -13,12 +13,24 @@ namespace ES_classification
     {
         private Form motherForm;
         private DBWorker dbWorker;
+        private bool isEditingMode;
+        private int outcomeId;
+        private string previousOutcomeString;
 
-        public AddOutcomeForm(Form f, DBWorker dbWorker)
+        public AddOutcomeForm(Form f, DBWorker dbWorker, bool isEditing, int outcomeId, string previousOutcomeName)
         {
             InitializeComponent();
             this.motherForm = f;
             this.dbWorker = dbWorker;
+
+            isEditingMode = isEditing;
+            this.outcomeId = outcomeId;
+
+            if (isEditing == true)
+            {
+                btnAddOutcome.Text = "Изменить вывод";
+                tbOutcomeField.Text = previousOutcomeName;
+            }
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -42,12 +54,16 @@ namespace ES_classification
             }
             try
             {
-                dbWorker.addNewOutcome(outcomeString);
-                MessageBox.Show("Вывод \"" + outcomeString + "\" успешно добавлен");
+                if (isEditingMode == false)
+                    dbWorker.addNewOutcome(outcomeString);
+                else
+                    dbWorker.updateOutcome(outcomeId, outcomeString);
+                MessageBox.Show("Изменения внесены успешно");
+                //MessageBox.Show("Вывод \"" + outcomeString + "\" успешно добавлен");
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Oшибка при добавлении вопроса! " + ex.Message.ToString());
+                MessageBox.Show("Oшибка операции! " + ex.Message.ToString());
             }
         }
     }

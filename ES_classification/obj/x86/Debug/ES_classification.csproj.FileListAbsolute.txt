@@ -23,3 +23,5 @@ E:\Синхронизация с Облаком mail.ru\ES_classification\ES_cla
 E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.csproj.ResolveComReference.cache
 E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.AddOutcomeForm.resources
 E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.KBEditForm.resources
+E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.FindQuestionForm.resources
+E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.AddFunctionalAreaForm.resources

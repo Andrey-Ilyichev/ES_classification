@@ -16,7 +16,7 @@ namespace ES_classification
 
             public DBWorker()
             {
-                string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;" + @"Data Source= KBcar.mdb";
+                string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;" + @"Data Source= db1.mdb";
                 connection = new OleDbConnection(connectionString);
             }
 
@@ -25,7 +25,6 @@ namespace ES_classification
                 string connectionString = "Provider=Microsoft.Jet.OLEDB.4.0;" + @"Data Source= " + filePath;
                 this.connection = new OleDbConnection(connectionString);
             }
-
 
             ~DBWorker()
             {
@@ -123,7 +122,7 @@ namespace ES_classification
             //    }
             //}
 
-            public void addNewQuestion(string questionString)
+            public void addNewQuestion(string questionString, int functionalAreaId)
             {
                 try
                 {
@@ -138,7 +137,7 @@ namespace ES_classification
                     }
 
 
-                    string fullString = "INSERT INTO Question  (questionPhrase) VALUES ('" + questionString + "')";
+                    string fullString = string.Format("INSERT INTO Question  (questionPhrase, functionalAreaId) VALUES ('{0}', {1})", questionString, functionalAreaId);
                     command = new OleDbCommand(fullString, this.connection);
                     command.ExecuteNonQuery();
                 }
@@ -165,17 +164,18 @@ namespace ES_classification
                 connection.Open();
 
                 string sqlCreateOutcomeTable = @"CREATE TABLE Outcome (" +
-                                                "idOutcome integer IDENTITY(1,1), " +
+                                                "id integer IDENTITY(1,1), " +
                                                 "outcomeName char(100), " +
                                                 "countClassification integer, " +
-                                                "PRIMARY KEY(idOutcome)) ";
+                                                "PRIMARY KEY(id)) ";
                 OleDbCommand command = new OleDbCommand(sqlCreateOutcomeTable, connection);
                 command.ExecuteNonQuery();
 
                 string sqlCreateQuestionTable = @"CREATE TABLE Question (" +
-                                                "idQuestion integer IDENTITY(1,1), " +
+                                                "id integer IDENTITY(1,1), " +
                                                 "questionPhrase char(100), " +
-                                                "PRIMARY KEY(idQuestion)) ";
+                                                "functionalAreaId integer," +
+                                                "PRIMARY KEY(id)) ";
 
                 command.CommandText = sqlCreateQuestionTable;
                 command.ExecuteNonQuery();
@@ -192,6 +192,14 @@ namespace ES_classification
                 command.CommandText = sqlCreateQuestionaryTable;
                 command.ExecuteNonQuery();
 
+                string sqlCreateFunctionalAreaTable = @"CREATE TABLE FunctionalArea (" +
+                                "id integer IDENTITY(1,1), " +
+                                "areaName char(100), " +
+                                "PRIMARY KEY(id)) ";
+
+                command.CommandText = sqlCreateFunctionalAreaTable;
+                command.ExecuteNonQuery();
+
                 connection.Close();
                 command = null;
             }
@@ -199,8 +207,9 @@ namespace ES_classification
             internal void deleteQuestion(int selectedId)
             {
                 connection.Open();
-                string sqlDeleteQuestion = @"DELETE FROM Question WHERE idQuestion=" + selectedId;
+                string sqlDeleteQuestion = @"DELETE FROM Question WHERE id = " + selectedId;
                 OleDbCommand command = new OleDbCommand(sqlDeleteQuestion, connection);
+
                 command.ExecuteNonQuery();
 
                 string sqlDeleteFromQuestionary = @"DELETE FROM Questionary WHERE questionId=" + selectedId;
@@ -226,7 +235,7 @@ namespace ES_classification
                     }
 
 
-                    string fullString = "INSERT INTO Outcome  (outcomeName , countClassification) VALUES ('" + outcomeString + "' , 1)";
+                    string fullString = "INSERT INTO Outcome  (outcomeName , countClassification) VALUES ('" + outcomeString + "' , 4)";
                     command = new OleDbCommand(fullString, this.connection);
                     command.ExecuteNonQuery();
                 }
@@ -236,14 +245,10 @@ namespace ES_classification
                 }
             }
 
-
-
-
-
             internal void deleteOutcome(int selectedId)
             {
                 connection.Open();
-                string sqlDeleteQuestion = @"DELETE FROM Outcome WHERE idOutcome=" + selectedId;
+                string sqlDeleteQuestion = @"DELETE FROM Outcome WHERE id =" + selectedId;
                 OleDbCommand command = new OleDbCommand(sqlDeleteQuestion, connection);
                 command.ExecuteNonQuery();
 
@@ -253,6 +258,167 @@ namespace ES_classification
 
                 command = null;
                 connection.Close();
+            }
+
+            internal DataTable getDTprobOfAnswersByQuestion(int questionId)
+            {
+                DataTable dtData = new DataTable();
+                string selectString = "SELECT outcomeId, yesCount, noCount, dontKnowCount, noMatterCount FROM Questionary WHERE questionId = " + questionId + " ORDER BY outcomeId ASC";
+                OleDbCommand cmd = new OleDbCommand(selectString, this.connection);
+                connection.Open();
+                OleDbDataAdapter adapter = new OleDbDataAdapter(cmd);
+                adapter.Fill(dtData);
+                connection.Close();
+
+                DataTable dtResult = new DataTable("probabilityOfAnswers");
+
+                DataColumn outcomeId = new DataColumn("outcomeId", typeof(int));
+                DataColumn yesProbability = new DataColumn("yesProbability", typeof(float));
+                DataColumn noProbability = new DataColumn("noProbability", typeof(float));
+                DataColumn dontKnowProbability = new DataColumn("dontKnowProbability", typeof(float));
+                DataColumn noMatterProbability = new DataColumn("noMatterProbability", typeof(float));
+
+                dtResult.Columns.AddRange(new DataColumn[] { outcomeId, yesProbability, noProbability, dontKnowProbability, noMatterProbability });
+
+                for (int i = 0; i < dtData.Rows.Count; i++)
+                {
+                    int yesCount = (int)dtData.Rows[i]["yesCount"];
+                    int noCount = (int)dtData.Rows[i]["noCount"];
+                    int dontKnowCount = (int)dtData.Rows[i]["dontKnowCount"];
+                    int noMatterCount = (int)dtData.Rows[i]["noMatterCount"];
+                    int count =  yesCount + noCount + dontKnowCount + noMatterCount;
+
+                    float yesProb = (float)yesCount / count;
+                    float noProb = (float)noCount / count;
+                    float dontKnowProb = (float)dontKnowCount / count;
+                    float noMatterProb = (float)noMatterCount / count;
+
+                    DataRow dRow = dtResult.NewRow();
+                    dRow[outcomeId] = dtData.Rows[i]["outcomeId"];
+                    dRow[yesProbability] = yesProb;
+                    dRow[noProbability] = noProb;
+                    dRow[dontKnowProbability] = dontKnowProb;
+                    dRow[noMatterProbability] = noMatterProb;
+
+                    dtResult.Rows.Add(dRow);
+                }
+
+                return dtResult;
+            }
+
+            internal void addNewFunctionalArea(string functionalAreaName)
+            {
+                try
+                {
+                    string selectString = "SELECT COUNT(*) FROM FunctionalArea WHERE areaName = \'" + functionalAreaName + "\'";
+                    OleDbCommand command = new OleDbCommand(selectString, this.connection);
+                    this.connection.Open();
+                    object o = command.ExecuteScalar();
+                    int count = System.Convert.ToInt32(o);
+                    if (count != 0)
+                    {
+                        throw new Exception("Функциональная \"" + functionalAreaName + "\" уже есть в системе");
+                    }
+
+
+                    string fullString = "INSERT INTO FunctionalArea  (areaName) VALUES ('" + functionalAreaName + "')";
+                    command = new OleDbCommand(fullString, this.connection);
+                    command.ExecuteNonQuery();
+                }
+                finally
+                {
+                    this.connection.Close();
+                }
+            }
+
+            internal DataRow getStatisticOfAnswers(int outcomeId, int questionId)
+            {
+                DataRow result = null;
+                try
+                {
+                    string selectString = string.Format("SELECT * FROM Questionary WHERE outcomeId = {0} AND questionId = {1}", outcomeId, questionId);
+                    OleDbCommand command = new OleDbCommand(selectString, connection);
+
+                    DataTable dt = new DataTable();
+                    this.connection.Open();
+                    OleDbDataAdapter da = new OleDbDataAdapter(command);
+                    da.Fill(dt);
+                    connection.Close();
+                    if (dt.Rows.Count == 0)
+                        return result;
+                    else
+                        result = dt.Rows[0];
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                finally 
+                {
+                    connection.Close();
+                }
+                return result;
+            }
+
+            internal int updateStatistic(int outcomeId, int questionId, int yesProcent)
+            {
+                if (yesProcent == 0)
+                    yesProcent = 1;
+                if (yesProcent == 100)
+                    yesProcent = 99;
+
+                int result = -1;
+                try 
+                {
+                    string updateString = string.Format("UPDATE Questionary SET yesCount = {0} AND noCount = {1} WHERE outcomeId = {2} AND questionId = {3}", yesProcent, 100-yesProcent,outcomeId,questionId);
+                    OleDbCommand command = new OleDbCommand(updateString, connection);
+                    connection.Open();
+                    result = command.ExecuteNonQuery();
+                }
+                finally 
+                {
+                    connection.Close();
+                }
+
+                if (result == 0)
+                    result = this.addStatistic(outcomeId, questionId, yesProcent, 100 - yesProcent, 1, 1);
+                
+
+                return result;
+            }
+
+            internal int addStatistic(int outcomeId, int questionId, int yesCount, int noCount, int dontKnowCount, int noMatterCount)
+            {
+                int result = -1;
+                try
+                {
+                    string insertString = string.Format("INSERT INTO Questionary (outcomeId, questionId, yesCount, noCount, dontKnowCount, noMatterCount) " +
+                                                      " VALUES ({0},{1},{2},{3},{4},{5})", outcomeId, questionId, yesCount, noCount, dontKnowCount, noMatterCount);
+                    OleDbCommand command = new OleDbCommand(insertString, connection);
+                    connection.Open();
+                    result = command.ExecuteNonQuery();
+                }
+                finally 
+                { 
+                    connection.Close();
+                }
+                return result;       
+            }
+
+            internal void updateOutcome(int outcomeId, string outcomeString)
+            {
+                int result = -1;
+                try
+                {
+                    string updateString = string.Format("UPDATE Outcome SET outcomeName = '{0}' WHERE id = {1}", outcomeString, outcomeId);
+                    OleDbCommand command = new OleDbCommand(updateString, connection);
+                    connection.Open();
+                    result = command.ExecuteNonQuery();
+                }
+                finally
+                {
+                    connection.Close();
+                }
             }
         }
 

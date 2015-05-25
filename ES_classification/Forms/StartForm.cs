@@ -54,7 +54,7 @@ namespace ES_classification
             {
                 DBWorker dbWorker = new DBWorker(openFileDialog.FileName);
                 MainForm formEdit = new MainForm(dbWorker);
-                formEdit.Show();
+                formEdit.ShowDialog();
             }
             openFileDialog = null;
         }

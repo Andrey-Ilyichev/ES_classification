@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Forms\AddFunctionalAreaForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AddFunctionalAreaForm.Designer.cs">
+      <DependentUpon>AddFunctionalAreaForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\AddQuestionForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -59,6 +65,12 @@
       <DependentUpon>AddOutcomeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="DBWorker.cs" />
+    <Compile Include="Forms\FindQuestionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FindQuestionForm.Designer.cs">
+      <DependentUpon>FindQuestionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -85,11 +97,18 @@
     <Compile Include="Forms\StartForm.Designer.cs">
       <DependentUpon>StartForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Forms\AddFunctionalAreaForm.resx">
+      <DependentUpon>AddFunctionalAreaForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\AddQuestionForm.resx">
       <DependentUpon>AddQuestionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AddOutcomeForm.resx">
       <DependentUpon>AddOutcomeForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FindQuestionForm.resx">
+      <DependentUpon>FindQuestionForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

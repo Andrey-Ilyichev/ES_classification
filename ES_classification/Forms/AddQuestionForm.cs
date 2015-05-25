@@ -13,12 +13,29 @@ namespace ES_classification
     {
         private Form motherForm;
         private DBWorker dbWorker;
+        private DataTable dtFunctionalArea;
 
         public AddQuestionForm(Form f, DBWorker dbWorker)
         {
             InitializeComponent();
             this.motherForm = f;
             this.dbWorker = dbWorker;
+
+            updateCmbFunctionalArea();
+        }
+
+        private void updateCmbFunctionalArea()
+        {            
+            dtFunctionalArea = dbWorker.getDataTable("FunctionalArea");
+            cmbFunctionalArea.DataSource = dtFunctionalArea;
+            cmbFunctionalArea.DisplayMember = "areaName";
+            cmbFunctionalArea.ValueMember = "id";
+
+            if (dtFunctionalArea.Rows.Count == 0)
+            {
+                dbWorker.addNewFunctionalArea("---");
+                updateCmbFunctionalArea();
+            }
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -35,6 +52,8 @@ namespace ES_classification
         private void btnAddQuestion_Click(object sender, EventArgs e)
         {
             string questionString = tbQuestionField.Text;
+            int functionalAreaId = (int)cmbFunctionalArea.SelectedValue;
+
             if ( questionString == "")
             {
                 MessageBox.Show("Текстовое поле пустое!");
@@ -42,7 +61,7 @@ namespace ES_classification
             }
             try
             {
-                dbWorker.addNewQuestion(questionString);
+                dbWorker.addNewQuestion(questionString, functionalAreaId);
                 MessageBox.Show("Вопрос \"" + questionString + "\" успешно добавлен");
             }
             catch (Exception ex)
@@ -50,5 +69,18 @@ namespace ES_classification
                 MessageBox.Show("Oшибка при добавлении вопроса! " + ex.Message.ToString());
             }
         }
+
+        private void btnAddFunctionalArea_Click(object sender, EventArgs e)
+        {
+            AddFunctionalAreaForm afar = new AddFunctionalAreaForm(this.dbWorker);
+            this.Enabled = false;
+
+            afar.ShowDialog();
+            this.Enabled = true;
+            this.updateCmbFunctionalArea();
+
+            cmbFunctionalArea.SelectedIndex = dtFunctionalArea.Rows.Count - 1;
+        }
+
     }
 }
