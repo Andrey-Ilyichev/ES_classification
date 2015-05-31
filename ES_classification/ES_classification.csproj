@@ -46,72 +46,93 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Forms\AddFunctionalAreaForm.cs">
+    <Compile Include="Answer.cs" />
+    <Compile Include="bayes es\Forms\AddFunctionalAreaForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\AddFunctionalAreaForm.Designer.cs">
+    <Compile Include="bayes es\Forms\AddFunctionalAreaForm.Designer.cs">
       <DependentUpon>AddFunctionalAreaForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\AddQuestionForm.cs">
+    <Compile Include="bayes es\Forms\AddQuestionForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\AddQuestionForm.Designer.cs">
+    <Compile Include="bayes es\Forms\AddQuestionForm.Designer.cs">
       <DependentUpon>AddQuestionForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\AddOutcomeForm.cs">
+    <Compile Include="bayes es\Forms\AddOutcomeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\AddOutcomeForm.Designer.cs">
+    <Compile Include="bayes es\Forms\AddOutcomeForm.Designer.cs">
       <DependentUpon>AddOutcomeForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="DBWorker.cs" />
-    <Compile Include="Forms\FindQuestionForm.cs">
+    <Compile Include="bayes es\DBWorker.cs" />
+    <Compile Include="bayes es\Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FindQuestionForm.Designer.cs">
-      <DependentUpon>FindQuestionForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\MainForm.Designer.cs">
+    <Compile Include="bayes es\Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pair.cs" />
+    <Compile Include="production es\DBworker2.cs" />
+    <Compile Include="production es\ES_form.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="production es\ES_form.designer.cs">
+      <DependentUpon>ES_form.cs</DependentUpon>
+    </Compile>
+    <Compile Include="production es\form_edit_kb.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="production es\form_edit_kb.designer.cs">
+      <DependentUpon>form_edit_kb.cs</DependentUpon>
+    </Compile>
+    <Compile Include="production es\startForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="production es\startForm.designer.cs">
+      <DependentUpon>startForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Forms\SelectOutcomeWindow.cs">
+    <Compile Include="bayes es\Forms\SelectOutcomeWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\SelectOutcomeWindow.Designer.cs">
+    <Compile Include="bayes es\Forms\SelectOutcomeWindow.Designer.cs">
       <DependentUpon>SelectOutcomeWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\KBEditForm.cs">
+    <Compile Include="bayes es\Forms\KBEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\KBEditForm.Designer.cs">
+    <Compile Include="bayes es\Forms\KBEditForm.Designer.cs">
       <DependentUpon>KBEditForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\StartForm.cs">
+    <Compile Include="bayes es\Forms\StartFormBayesES.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\StartForm.Designer.cs">
-      <DependentUpon>StartForm.cs</DependentUpon>
+    <Compile Include="bayes es\Forms\StartFormBayesES.Designer.cs">
+      <DependentUpon>StartFormBayesES.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Forms\AddFunctionalAreaForm.resx">
+    <EmbeddedResource Include="bayes es\Forms\AddFunctionalAreaForm.resx">
       <DependentUpon>AddFunctionalAreaForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\AddQuestionForm.resx">
+    <EmbeddedResource Include="bayes es\Forms\AddQuestionForm.resx">
       <DependentUpon>AddQuestionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\AddOutcomeForm.resx">
+    <EmbeddedResource Include="bayes es\Forms\AddOutcomeForm.resx">
       <DependentUpon>AddOutcomeForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FindQuestionForm.resx">
-      <DependentUpon>FindQuestionForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\MainForm.resx">
+    <EmbeddedResource Include="bayes es\Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="production es\ES_form.resx">
+      <DependentUpon>ES_form.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="production es\form_edit_kb.resx">
+      <DependentUpon>form_edit_kb.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="production es\startForm.resx">
+      <DependentUpon>startForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -122,14 +143,14 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="Forms\SelectOutcomeWindow.resx">
+    <EmbeddedResource Include="bayes es\Forms\SelectOutcomeWindow.resx">
       <DependentUpon>SelectOutcomeWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\KBEditForm.resx">
+    <EmbeddedResource Include="bayes es\Forms\KBEditForm.resx">
       <DependentUpon>KBEditForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\StartForm.resx">
-      <DependentUpon>StartForm.cs</DependentUpon>
+    <EmbeddedResource Include="bayes es\Forms\StartFormBayesES.resx">
+      <DependentUpon>StartFormBayesES.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -152,9 +173,10 @@
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

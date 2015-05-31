@@ -32,13 +32,9 @@
             this.btnAddQuestion = new System.Windows.Forms.Button();
             this.btnDeleteQuestion = new System.Windows.Forms.Button();
             this.btnEndOfWork = new System.Windows.Forms.Button();
-            this.btnFindQuestion = new System.Windows.Forms.Button();
             this.dgvOutcome = new System.Windows.Forms.DataGridView();
             this.btnAddOutcome = new System.Windows.Forms.Button();
             this.btnDeleteOutcome = new System.Windows.Forms.Button();
-            this.tbFilter = new System.Windows.Forms.TextBox();
-            this.btnDropFilter = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.chbAllQuestions = new System.Windows.Forms.CheckBox();
             this.cmbFunctionalArea = new System.Windows.Forms.ComboBox();
@@ -87,12 +83,11 @@
             // 
             // btnDeleteQuestion
             // 
-            this.btnDeleteQuestion.Enabled = false;
-            this.btnDeleteQuestion.Location = new System.Drawing.Point(298, 145);
+            this.btnDeleteQuestion.Location = new System.Drawing.Point(298, 48);
             this.btnDeleteQuestion.Name = "btnDeleteQuestion";
             this.btnDeleteQuestion.Size = new System.Drawing.Size(196, 23);
             this.btnDeleteQuestion.TabIndex = 2;
-            this.btnDeleteQuestion.Text = "!!! Удалить вопрос";
+            this.btnDeleteQuestion.Text = "Изменить вопрос";
             this.btnDeleteQuestion.UseVisualStyleBackColor = true;
             this.btnDeleteQuestion.Click += new System.EventHandler(this.btnDeleteQuestion_Click);
             // 
@@ -105,16 +100,6 @@
             this.btnEndOfWork.Text = "Закончить редакирование";
             this.btnEndOfWork.UseVisualStyleBackColor = true;
             this.btnEndOfWork.Click += new System.EventHandler(this.btnEndOfWork_Click);
-            // 
-            // btnFindQuestion
-            // 
-            this.btnFindQuestion.Location = new System.Drawing.Point(298, 46);
-            this.btnFindQuestion.Name = "btnFindQuestion";
-            this.btnFindQuestion.Size = new System.Drawing.Size(196, 38);
-            this.btnFindQuestion.TabIndex = 4;
-            this.btnFindQuestion.Text = "Найти вопросы, содержащие определенный текст\r\n";
-            this.btnFindQuestion.UseVisualStyleBackColor = true;
-            this.btnFindQuestion.Click += new System.EventHandler(this.btnFindQuestion_Click);
             // 
             // dgvOutcome
             // 
@@ -149,40 +134,11 @@
             this.btnDeleteOutcome.UseVisualStyleBackColor = true;
             this.btnDeleteOutcome.Click += new System.EventHandler(this.btnDeleteOutcome_Click);
             // 
-            // tbFilter
-            // 
-            this.tbFilter.Location = new System.Drawing.Point(351, 90);
-            this.tbFilter.Name = "tbFilter";
-            this.tbFilter.Size = new System.Drawing.Size(143, 20);
-            this.tbFilter.TabIndex = 8;
-            // 
-            // btnDropFilter
-            // 
-            this.btnDropFilter.Location = new System.Drawing.Point(298, 116);
-            this.btnDropFilter.Name = "btnDropFilter";
-            this.btnDropFilter.Size = new System.Drawing.Size(196, 23);
-            this.btnDropFilter.TabIndex = 9;
-            this.btnDropFilter.Text = "Сбросить фильтр";
-            this.btnDropFilter.UseVisualStyleBackColor = true;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(298, 93);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(47, 13);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "Фильтр";
-            // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.chbAllQuestions);
             this.groupBox1.Controls.Add(this.cmbFunctionalArea);
-            this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.btnDropFilter);
-            this.groupBox1.Controls.Add(this.tbFilter);
-            this.groupBox1.Controls.Add(this.btnFindQuestion);
             this.groupBox1.Controls.Add(this.btnDeleteQuestion);
             this.groupBox1.Controls.Add(this.btnAddQuestion);
             this.groupBox1.Controls.Add(this.dgvQuestion);
@@ -355,13 +311,9 @@
         private System.Windows.Forms.Button btnAddQuestion;
         private System.Windows.Forms.Button btnDeleteQuestion;
         private System.Windows.Forms.Button btnEndOfWork;
-        private System.Windows.Forms.Button btnFindQuestion;
         private System.Windows.Forms.DataGridView dgvOutcome;
         private System.Windows.Forms.Button btnAddOutcome;
         private System.Windows.Forms.Button btnDeleteOutcome;
-        private System.Windows.Forms.TextBox tbFilter;
-        private System.Windows.Forms.Button btnDropFilter;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.ComboBox cmbFunctionalArea;

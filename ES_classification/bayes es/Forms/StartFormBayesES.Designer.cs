@@ -1,6 +1,6 @@
 ﻿namespace ES_classification
 {
-    partial class StartForm
+    partial class StartFormBayesES
     {
         /// <summary>
         /// Required designer variable.

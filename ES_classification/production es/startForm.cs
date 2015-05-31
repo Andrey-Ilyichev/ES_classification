@@ -6,18 +6,37 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.IO;
 using ADOX;
-
+using System.Collections;
 namespace ES_classification
 {
-    public partial class StartForm : Form
+    public partial class startForm : Form
     {
-        public StartForm()
+        private DataTable session;
+        private DBWorker dbw4bes;
+
+        public startForm()
         {
             InitializeComponent();
         }
 
-        private void btnCreateNewKB_Click(object sender, EventArgs e)
+
+        /// //////////////////////////////////////
+
+        public startForm(DataTable sessionList, DBWorker dbw)
+        {
+            this.dbw4bes = dbw;
+            this.session = sessionList;
+            InitializeComponent();
+        }
+
+        /// ////////////////////////////////////////
+
+
+
+
+        private void btn_createNewDB_Click(object sender, EventArgs e)
         {
             SaveFileDialog createNewDBDialog = new SaveFileDialog();
             createNewDBDialog.InitialDirectory = @"../";
@@ -29,12 +48,12 @@ namespace ES_classification
             {
                 try
                 {
-                    ADOX.Catalog cat = new Catalog();
+                    ADOX.CatalogClass cat = new CatalogClass();
                     string str = "provider=Microsoft.Jet.OleDb.4.0;Data Source=" + createNewDBDialog.FileName;
                     cat.Create(str);
                     cat = null;
-                    DBWorker dbWorker = new DBWorker(createNewDBDialog.FileName);
-                    dbWorker.formStructureOfKnowlegeBase();
+                    DBWorkerForProductionES dbWorker = new DBWorkerForProductionES(createNewDBDialog.FileName);
+                    dbWorker.formStructureKB();
                 }
                 catch (Exception ex)
                 {
@@ -44,7 +63,7 @@ namespace ES_classification
             createNewDBDialog = null;
         }
 
-        private void btnOpenKnowlegeBase_Click(object sender, EventArgs e)
+        private void btn_openDBfile_Click(object sender, EventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.InitialDirectory = @"../";
@@ -52,11 +71,20 @@ namespace ES_classification
             openFileDialog.Filter = @"DBfiles|*.mdb";
             if (openFileDialog.ShowDialog() == DialogResult.OK && openFileDialog.FileName.Length > 0)
             {
-                DBWorker dbWorker = new DBWorker(openFileDialog.FileName);
-                MainForm formEdit = new MainForm(dbWorker);
-                formEdit.ShowDialog();
+                //DBWorkerForProductionES dbWorker = new DBWorkerForProductionES(openFileDialog.FileName);
+                //form_edit_kb formEdit = new form_edit_kb(dbWorker);
+                //formEdit.ShowDialog();
+
+                DBWorkerForProductionES dbWorker = new DBWorkerForProductionES(openFileDialog.FileName);
+
+                this.Visible = false;
+                ES_form esForm = new ES_form(dbWorker,dbw4bes, session);
+                esForm.ShowDialog();
+                this.Close();
             }
             openFileDialog = null;
         }
     }
 }
+
+//TODO: Embed Interop Types посмотреть на что влияет (из Adox)

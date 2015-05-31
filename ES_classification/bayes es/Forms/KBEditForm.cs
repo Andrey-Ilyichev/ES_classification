@@ -38,6 +38,7 @@ namespace ES_classification
             dgvQuestion.Columns[1].HeaderText = "Вопрос";
             dgvQuestion.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             dgvQuestion.ReadOnly = true;
+            dgvQuestion.Columns[2].Visible = false;
 
             dgvOutcome.Columns[0].HeaderText = "#";
             dgvOutcome.Columns[0].Width = 25;
@@ -63,7 +64,7 @@ namespace ES_classification
         private void btnAddQuestion_Click(object sender, EventArgs e)
         {
             this.Enabled = false;
-            AddQuestionForm aqf = new AddQuestionForm(this, this.dbWorker);
+            AddQuestionForm aqf = new AddQuestionForm(this, this.dbWorker, false, 0, null);// new AddQuestionForm(this, this.dbWorker);
             aqf.Visible = true;
         }
 
@@ -81,16 +82,22 @@ namespace ES_classification
         private void btnDeleteQuestion_Click(object sender, EventArgs e)
         {
             int selectedId = (int)dgvQuestion.SelectedRows[0].Cells[0].Value;
+
             string questionPhrase = (string)dgvQuestion.SelectedRows[0].Cells[1].Value;
-            try
-            {
-                dbWorker.deleteQuestion(selectedId);
-                refreshDGVquestion();
-            }
-            catch(Exception ex) {
-                MessageBox.Show("Ошибка при удалении вопроса!\n" + ex.Message);
-            }
-            MessageBox.Show("Вопрос '" + questionPhrase + "' был успешно удален");
+            //try
+            //{
+            //    dbWorker.deleteQuestion(selectedId);
+            //    refreshDGVquestion();
+            //}
+            //catch(Exception ex) {
+            //    MessageBox.Show("Ошибка при удалении вопроса!\n" + ex.Message);
+            //}
+            //MessageBox.Show("Вопрос '" + questionPhrase + "' был успешно удален");
+
+
+            this.Enabled = false;
+            AddQuestionForm aof = new AddQuestionForm(this, this.dbWorker, true, selectedId, questionPhrase);
+            aof.ShowDialog();
         }
 
         private void btnAddQuestion_EnabledChanged(object sender, EventArgs e)
@@ -137,11 +144,6 @@ namespace ES_classification
             this.Enabled = false;
             AddOutcomeForm aof = new AddOutcomeForm(this, this.dbWorker, true, selectedId, outcomePhrase);
             aof.ShowDialog();
-        }
-
-        private void btnFindQuestion_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void chbAllQuestions_CheckedChanged(object sender, EventArgs e)
@@ -206,7 +208,10 @@ namespace ES_classification
             int questionId = (int)dgvQuestion.SelectedRows[0].Cells[0].Value;
             int outcomeId = (int)dgvOutcome.SelectedRows[0].Cells[0].Value;
             int yesProcent = System.Convert.ToInt32(tbYesAnswerProcent.Text);
-            dbWorker.updateStatistic(outcomeId, questionId, yesProcent);
+            int result = dbWorker.updateStatistic(outcomeId, questionId, yesProcent);
+
+            if (result == 1)
+                MessageBox.Show("Статистика учтена успешно");
         }
 
         private void updateTbYesAnswerProcent()

@@ -23,7 +23,7 @@ namespace ES_classification
             this.motherForm = f;
             this.dbWorker = dbWorker;
 
-            isEditingMode = isEditing;
+            this.isEditingMode = isEditing;
             this.outcomeId = outcomeId;
 
             if (isEditing == true)

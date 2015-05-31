@@ -158,7 +158,6 @@ namespace ES_classification
                 return result;
             }
 
-
             internal void formStructureOfKnowlegeBase()
             {
                 connection.Open();
@@ -370,7 +369,7 @@ namespace ES_classification
                 int result = -1;
                 try 
                 {
-                    string updateString = string.Format("UPDATE Questionary SET yesCount = {0} AND noCount = {1} WHERE outcomeId = {2} AND questionId = {3}", yesProcent, 100-yesProcent,outcomeId,questionId);
+                    string updateString = string.Format("UPDATE Questionary SET yesCount = {0}, noCount = {1} WHERE outcomeId = {2} AND questionId = {3}", yesProcent, 100-yesProcent,outcomeId,questionId);
                     OleDbCommand command = new OleDbCommand(updateString, connection);
                     connection.Open();
                     result = command.ExecuteNonQuery();
@@ -420,8 +419,132 @@ namespace ES_classification
                     connection.Close();
                 }
             }
+
+            /// <summary>
+            /// /////////////////////////////////////////////////////////////////////////
+            /// </summary>
+            /// <param name="questionId"></param>
+            /// <returns></returns>
+            //internal string getQuestionPhraseByQuestionId(int questionId)
+            //{
+            //    string result = null;
+            //    try
+            //    {
+            //        string selectString = string.Format("SELECT * FROM Question WHERE id = {0}", questionId);
+            //        OleDbCommand command = new OleDbCommand(selectString, connection);
+
+            //        DataTable dt = new DataTable();
+            //        this.connection.Open();
+            //        OleDbDataAdapter da = new OleDbDataAdapter(command);
+            //        da.Fill(dt);
+            //        connection.Close();
+
+            //        if (dt.Rows.Count == 0)
+            //            return result;
+            //        else
+            //            result = dt.Rows[0][1].ToString();
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show(ex.Message);
+            //    }
+            //    finally
+            //    {
+            //        connection.Close();
+            //    }
+            //    return result;
+            //}
+
+
+            internal int insertNewPositionInQuestionary(int outcomeId, int questionId, int yesCount, int noCount, int dontKnowCount, int noMatterCount)
+            {
+                int result = 0;
+                string sql = string.Format("insert into Questionary (outcomeId, questionId, yesCount, noCount, dontKnowCount, noMatterCount) values ({0}, {1}, {2}, {3}, {4}, {5})",
+                    outcomeId, questionId, yesCount, noCount, dontKnowCount, noMatterCount);
+
+                    //"insert into Questionary (id, outcomeId, questionId, yesCount, noCount, dontKnowCount, noMatterCount) " +
+                    //                                           " values ( " + maxId + " , " + jid + " , " + curPairQuestionId + ", 1, 1, 1, 1)";
+                try
+                {
+                    OleDbCommand command = new OleDbCommand(sql, connection);
+                    connection.Open();
+                    result = command.ExecuteNonQuery();
+                    connection.Close();
+                }
+                catch 
+                {
+                    result = 0; 
+                }
+                finally 
+                { 
+                    connection.Close();
+                }
+
+                return result;
+            }
+
+            internal int updatePositionInQuestinary(int outcomeId, int questionId, string answerColumnName)
+            {
+                int result = 0;
+
+                //string updateSql = "update Questionary set " + answerColumnName + " = " + (answerCount + 1) + " where id = " + idInQuestionary;
+
+                string updateSql = string.Format("UPDATE Questionary SET {0} = {0} + 1 WHERE outcomeId = {1} AND questionId = {2}", answerColumnName, outcomeId, questionId);
+                try
+                {
+                    OleDbCommand command = new OleDbCommand(updateSql, connection);
+                    connection.Open();
+                    result = command.ExecuteNonQuery();
+                    connection.Close();
+                }
+                catch { result = 0; }
+                finally { connection.Close(); }
+
+
+                return result;
+            }
+
+            internal int updateCountClassificationForOutcome(int outcomeId)
+            {
+                //string selectStr = "id = " + idOfOutcome;
+                //DataRow[] foundRowsOutcome = dSet.Tables["Outcome"].Select(selectStr);
+
+                //int oldCountClassification = (int)foundRowsOutcome[0]["countClassification"];
+
+
+                int result = 0;
+                try
+                {
+                    string updateSql = "update Outcome set countClassification = countClassification + 1 where id = " + outcomeId;
+                    OleDbCommand command = new OleDbCommand(updateSql, connection);
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+                catch { result = 0; }
+                finally { connection.Close(); }
+                return result;
+ 
+            }
+
+            internal void updateQuestion(int questionId, int functionalAreaId, string questionString)
+            {
+                int result = -1;
+                try
+                {
+                    string updateString = string.Format("UPDATE Question SET questionPhrase = '{0}', functionalAreaId = {1} WHERE id = {2}", questionString, functionalAreaId, questionId);
+                    OleDbCommand command = new OleDbCommand(updateString, connection);
+                    connection.Open();
+                    result = command.ExecuteNonQuery();
+                }
+                catch { result = -1; }
+                finally
+                {
+                    connection.Close();
+                }
+            }
         }
 
-
+    ///////////////////////////////////////////////////////////////////////////
 
 }

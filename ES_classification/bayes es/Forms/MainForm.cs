@@ -14,10 +14,8 @@ namespace ES_classification
 
     public partial class MainForm : Form
     {
-        private enum Answer { YES, NO, DONTKNOW, NOMATTER }
-
         private int currentQuestionId = 0;
-        private pair currentPair;
+        //private Pair currentPair;
         private DBWorker dbWorker;
         private DataSet dSet;
         private DataTable dtProbList;
@@ -28,18 +26,9 @@ namespace ES_classification
         private int questionCountBeforeAnswer = 5;
         private int currentQuestionCount = 0;
 
-        private struct pair
-        {
-            public int questionId;
-            public Answer answer;
+        private bool isAutoMode = false;
 
-            public int returnZero()
-            {
-                return 0;
-            }
-        }
-
-        private ArrayList session = new ArrayList();
+        //private ArrayList session = new ArrayList();
 
         private void getDataSetAndResetDGVquestion()
         {
@@ -91,13 +80,16 @@ namespace ES_classification
             DataColumn questionId = new DataColumn("questionId", typeof(int));
             questionId.Caption = "id вопроса";
 
+            DataColumn answerId = new DataColumn("answerId", typeof(int));
+            answerId.Caption = "id ответа";
+
             DataColumn questionPhrase = new DataColumn("questionPhrase", typeof(string));
             questionPhrase.Caption = "Вопрос";
 
-            DataColumn answer = new DataColumn("answer", typeof(string));
+            DataColumn answer = new DataColumn("answerPhrase", typeof(string));
             answer.Caption = "Ответ";
 
-            dtSession.Columns.AddRange(new DataColumn[] { questionId, questionPhrase, answer});
+            dtSession.Columns.AddRange(new DataColumn[] { questionId, answerId, questionPhrase, answer});
 
             dgvSession.DataSource = dtSession;
             for (int i = 0; i < dtSession.Columns.Count; i++)
@@ -106,7 +98,9 @@ namespace ES_classification
             }
 
 
-            dgvSession.Columns[0].Visible = false;
+            dgvSession.Columns["questionId"].Visible = false;
+            dgvSession.Columns["answerId"].Visible = false;
+            dgvSession.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
         private void getProbListAndSetIntoDGV()
@@ -166,11 +160,16 @@ namespace ES_classification
         private void askNextQuestion()//line order of questions
         {
             currentQuestionId++;
+
+
+
             //если вопросы закончились
             if (currentQuestionId > dgvQuestion.RowCount)
             {
                 MessageBox.Show("Вопросы закончились");
                 getResult();
+
+
                 //DataView dView = new DataView(dtProbList);
                 //dView.Sort = "currentProbability DESC";
                 //int idOfOutcomeFromDview = (int)dView[0][0];
@@ -209,13 +208,20 @@ namespace ES_classification
 
                 //    btn_stop_Click(null, null);
                 //}
+
+
             }//есть ещё вопросы
             else
             {
-                currentPair.questionId = currentQuestionId;
-
-                lbl_currentQuestion.Text = null;
-                lbl_currentQuestion.Text = dgvQuestion[1, currentQuestionId - 1].Value.ToString();
+                //currentPair.questionId = currentQuestionId;
+               // int count = (int)dtSession.Compute("Count(questionId)", "questionId = " + currentQuestionId);
+               // if (count != 0)
+               //     askNextQuestion();
+              //  else
+                {
+                    lbl_currentQuestion.Text = null;
+                    lbl_currentQuestion.Text = dgvQuestion[1, currentQuestionId - 1].Value.ToString();
+                }
             }
         }
 
@@ -230,7 +236,7 @@ namespace ES_classification
             else
             {
                 throw new Exception("задать следующий вопрос!");
-                int newQuestionId = getNextQuestionId();
+               // int newQuestionId = getNextQuestionId();
             }
 
         }
@@ -257,16 +263,24 @@ namespace ES_classification
 
                 float currentOutcomeProb = apriorProb;
 
-                for (int k = 0; k < session.Count; k++)//все элементы в сессии
+                //for (int k = 0; k < session.Count; k++)//все элементы в сессии
+                //
+                for (int k = 0; k < dtSession.Rows.Count; k++)
                 {
-                    pair curPair = (pair)session[k];
-                    int coloumnOfAnswer = getColoumnIdByAnswer(curPair.answer);
+                    //Pair curPair = (Pair)session[k];
+
+                    //int coloumnOfAnswer = getColoumnIdByAnswer(curPair.answer);
+                    object obj = dtSession.Rows[k]["answerId"];
+                    int coloumnOfAnswer = (int)obj;
 
 
                     float conProbAnswer = 0;
 
+                    int curPairQuestionId = (int)dtSession.Rows[k]["questionId"];
 
-                    string selectStr = "outcomeId = " + jid + " AND " + " questionId = " + curPair.questionId;
+                    //string selectStr = "outcomeId = " + jid + " AND " + " questionId = " + curPair.questionId;
+                    string selectStr = "outcomeId = " + jid + " AND " + " questionId = " + curPairQuestionId;
+
                     DataRow[] foundRowsQuestionary = dSet.Tables["Questionary"].Select(selectStr);
                     if (foundRowsQuestionary.Length == 0)
                     {
@@ -286,7 +300,7 @@ namespace ES_classification
 
                         dRow["id"] = maxId + 1;
                         dRow["outcomeId"] = jid;
-                        dRow["questionId"] = curPair.questionId;
+                        dRow["questionId"] = curPairQuestionId;
                         dRow["yesCount"] = 1;
                         dRow["noCount"] = 1;
                         dRow["dontKnowCount"] = 1;
@@ -297,17 +311,18 @@ namespace ES_classification
 
                         maxId++;
 
-                        string selectStrAg = "outcomeId = " + jid + " AND " + " questionId = " + curPair.questionId;
+                        string selectStrAg = "outcomeId = " + jid + " AND " + " questionId = " + curPairQuestionId;
                         DataRow[] foundRowsQuestionaryAg = dSet.Tables["Questionary"].Select(selectStrAg);
                         if (foundRowsQuestionaryAg.Length == 0)
                         { MessageBox.Show("Problem in searching"); }
 
-                        string sql = "insert into Questionary (id, outcomeId, questionId, yesCount, noCount, dontKnowCount, noMatterCount) " +
-                                                               " values ( " + maxId + " , " + jid + " , " + curPair.questionId + ", 1, 1, 1, 1)";
-                        OleDbCommand command = new OleDbCommand(sql, dbWorker.connection);
-                        dbWorker.connection.Open();
-                        command.ExecuteNonQuery();
-                        dbWorker.connection.Close();
+                        //string sql = "insert into Questionary (id, outcomeId, questionId, yesCount, noCount, dontKnowCount, noMatterCount) " +
+                        //                                       " values ( " + maxId + " , " + jid + " , " + curPairQuestionId + ", 1, 1, 1, 1)";
+                        //OleDbCommand command = new OleDbCommand(sql, dbWorker.connection);
+                        //dbWorker.connection.Open();
+                        //command.ExecuteNonQuery();
+                        //dbWorker.connection.Close();
+                        dbWorker.insertNewPositionInQuestionary(jid, curPairQuestionId, 1, 1, 1, 1);
 
                         conProbAnswer = 1.0f / 4.0f;
                     }
@@ -330,6 +345,9 @@ namespace ES_classification
                     }
                     currentOutcomeProb *= conProbAnswer;
                 }
+                if (currentOutcomeProb < 0.000001)
+                    currentOutcomeProb = 0;
+
                 foundRows[0][2] = currentOutcomeProb;
 
 
@@ -349,6 +367,9 @@ namespace ES_classification
         private void btn_start_Click(object sender, EventArgs e)
         {
             btn_start.Enabled = false;
+            isAutoMode = true;
+
+            gbManualMode.Enabled = false;
 
             btn_stop.Enabled = true;
             btn_yes.Enabled = true;
@@ -356,60 +377,133 @@ namespace ES_classification
             btn_dontKnow.Enabled = true;
             btn_noMatter.Enabled = true;
 
+            btnClearSession.Enabled = false;
+
             askNextQuestion();
         }
 
         private void btn_yes_Click(object sender, EventArgs e)
         {
-            currentPair.questionId = currentQuestionId;
-            currentPair.answer = Answer.YES;
-            session.Add(currentPair);
+            //currentPair.questionId = currentQuestionId;
+            //currentPair.answer = Answer.YES;
+           //session.Add(currentPair);
 
-            updateDtProbList();
-            askNextQuestion();
+
+
+            if (isAutoMode == true)
+            {
+                addRowToDtSession(currentQuestionId, lbl_currentQuestion.Text, Answer.YES);
+                updateDtProbList();
+                askNextQuestion();
+            }
+            else 
+            {
+                int questionId;
+                string questionPhrase;
+                getInformationAboutSelectedQuestion(out questionId, out questionPhrase);
+
+                addRowToDtSession(questionId, questionPhrase, Answer.YES);
+                updateDtProbList();
+            }
         }
 
         private void btn_no_Click(object sender, EventArgs e)
         {
-            currentPair.questionId = currentQuestionId;
-            currentPair.answer = Answer.NO;
-            session.Add(currentPair);
+            //currentPair.questionId = currentQuestionId;
+            //currentPair.answer = Answer.NO;
+            //session.Add(currentPair);
 
-            updateDtProbList();
-            askNextQuestion();
+            if (isAutoMode == true)
+            {
+                addRowToDtSession(currentQuestionId, lbl_currentQuestion.Text, Answer.NO);
+                updateDtProbList();
+                askNextQuestion();
+            }
+            else
+            {
+                int questionId;
+                string questionPhrase;
+                getInformationAboutSelectedQuestion(out questionId, out questionPhrase);
+
+                addRowToDtSession(questionId, questionPhrase, Answer.NO);
+                updateDtProbList();
+            }
         }
 
         private void btn_dontKnow_Click(object sender, EventArgs e)
         {
-            currentPair.questionId = currentQuestionId;
-            currentPair.answer = Answer.DONTKNOW;
-            session.Add(currentPair);
+            ////currentPair.questionId = currentQuestionId;
+            ////currentPair.answer = Answer.DONTKNOW;
+            ////session.Add(currentPair);
 
-            updateDtProbList();
-            askNextQuestion();
+            //addRowToDtSession(currentQuestionId, lbl_currentQuestion.Text, Answer.DONTKNOW);
+            //updateDtProbList();
+
+            //if (isAutoMode == true)
+            //    askNextQuestion();
+
+
+            if (isAutoMode == true)
+            {
+                addRowToDtSession(currentQuestionId, lbl_currentQuestion.Text, Answer.DONTKNOW);
+                updateDtProbList();
+                askNextQuestion();
+            }
+            else
+            {
+                int questionId;
+                string questionPhrase;
+                getInformationAboutSelectedQuestion(out questionId, out questionPhrase);
+
+                addRowToDtSession(questionId, questionPhrase, Answer.DONTKNOW);
+                updateDtProbList();
+            }
         }
 
         private void btn_noMatter_Click(object sender, EventArgs e)
         {
-            currentPair.questionId = currentQuestionId;
-            currentPair.answer = Answer.NOMATTER;
-            session.Add(currentPair);
+            ////currentPair.questionId = currentQuestionId;
+            ////currentPair.answer = Answer.NOMATTER;
+            ////session.Add(currentPair);
 
-            updateDtProbList();
-            askNextQuestion();
+            //addRowToDtSession(currentQuestionId, lbl_currentQuestion.Text, Answer.NOMATTER);
+
+            //updateDtProbList();
+            //if (isAutoMode == true)
+            //    askNextQuestion();
+
+            if (isAutoMode == true)
+            {
+                addRowToDtSession(currentQuestionId, lbl_currentQuestion.Text, Answer.NOMATTER);
+                updateDtProbList();
+                askNextQuestion();
+            }
+            else
+            {
+                int questionId;
+                string questionPhrase;
+                getInformationAboutSelectedQuestion(out questionId, out questionPhrase);
+
+                addRowToDtSession(questionId, questionPhrase, Answer.NOMATTER);
+                updateDtProbList();
+            }
         }
 
         private void btn_stop_Click(object sender, EventArgs e)
         {
-            session.Clear();
+            dtSession.Clear();
+            //session.Clear();
             currentQuestionId = 0;
             btn_start.Enabled = true;
+            //gbManualMode.Enabled = true;
+            isAutoMode = false;
+            //btnClearSession.Enabled = true;
 
-            btn_stop.Enabled = false;
-            btn_yes.Enabled = false;
-            btn_no.Enabled = false;
-            btn_dontKnow.Enabled = false;
-            btn_noMatter.Enabled = false;
+           btn_stop.Enabled = false;
+          //  btn_yes.Enabled = false;
+          //  btn_no.Enabled = false;
+          //  btn_dontKnow.Enabled = false;
+           // btn_noMatter.Enabled = false;
 
 
             getDataSetAndResetDGVquestion();
@@ -418,121 +512,86 @@ namespace ES_classification
             lbl_currentQuestion.Text = null;
         }
 
-        private void updateQuestionaryForOutcome(ArrayList thisSession, int idOfOutcome)
+        private void updateQuestionaryForOutcome(int idOfOutcome)
         {
-            for (int i = 0; i < thisSession.Count; i++)
-            {
-                pair curPair = (pair)thisSession[i];
-                int coloumnId = getColoumnIdByAnswer(curPair.answer);
+            //for (int i = 0; i < thisSession.Count; i++)
+            //{
+            for (int i = 0; i < dtSession.Rows.Count; i++)
+			{
+                //pair curPair = (pair)thisSession[i];
+                //int coloumnId = getColoumnIdByAnswer(curPair.answer);
+                int curPairQuestionId = (int)dtSession.Rows[i]["questionId"];
+                int answerId = (int)dtSession.Rows[i]["answerId"];
+
+
                 //я знаю outcomeId, questionId, answerColoumn
                 //определяю id строки questionary и количество ответов текущего типа
-                string selectStr = "outcomeId = " + idOfOutcome + " AND " + " questionId = " + curPair.questionId;
+                string selectStr = "outcomeId = " + idOfOutcome + " AND " + " questionId = " + curPairQuestionId;
                 DataRow[] foundRowsQuestionary = dSet.Tables["Questionary"].Select(selectStr);
 
                 if (foundRowsQuestionary.Length == 0)
                 {
-                    string sql = "insert into Questionary (outcomeId, questionId, yesCount, noCount, dontKnowCount, noMatterCount) " +
-                                             " values (" + idOfOutcome + " , " + curPair.questionId + ", 1, 1, 1, 1)";
-                    OleDbCommand command1 = new OleDbCommand(sql, dbWorker.connection);
-                    dbWorker.connection.Open();
-                    command1.ExecuteNonQuery();
-                    dbWorker.connection.Close();
+                    //string sql = "insert into Questionary (outcomeId, questionId, yesCount, noCount, dontKnowCount, noMatterCount) " +
+                    //                         " values (" + idOfOutcome + " , " + curPairQuestionId + ", 1, 1, 1, 1)";
+                    //OleDbCommand command1 = new OleDbCommand(sql, dbWorker.connection);
+                    //dbWorker.connection.Open();
+                    //command1.ExecuteNonQuery();
+                    //dbWorker.connection.Close();
+                    dbWorker.insertNewPositionInQuestionary(idOfOutcome, curPairQuestionId, 1, 1, 1, 1);
+                    string answerColumnName = WorkerWithAnswer.getColoumnNameByAnswerId(answerId);
+                    dbWorker.updatePositionInQuestinary(idOfOutcome, curPairQuestionId, answerColumnName);
 
-                    string updateSql = "update Questionary set " + getColoumnNameByAnswer(curPair.answer) + " = " + (2) + 
-                        " where outcomeId = " + idOfOutcome + " AND questionId = " + curPair.questionId;
-                    OleDbCommand command = new OleDbCommand(updateSql, dbWorker.connection);
-                    dbWorker.connection.Open();
-                    command.ExecuteNonQuery();
-                    dbWorker.connection.Close();
+                    //string answerColumnName = WorkerWithAnswer.getColoumnNameByAnswerId(answerId);
+                    //string updateSql = "update Questionary set " + answerColumnName + " = " + (2) +
+                    //    " where outcomeId = " + idOfOutcome + " AND questionId = " + curPairQuestionId;
+                    //OleDbCommand command = new OleDbCommand(updateSql, dbWorker.connection);
+                    //dbWorker.connection.Open();
+                    //command.ExecuteNonQuery();
+                    //dbWorker.connection.Close();
 
 
                     //////////////////////////////
                     ///////// сделать +1 сразу к нужному ответу!!!!
                     ////////////////////////////
                 }
-
                 else
                 {
 
-                    foundRowsQuestionary = dSet.Tables["Questionary"].Select(selectStr);
+                    //foundRowsQuestionary = dSet.Tables["Questionary"].Select(selectStr);
                     int idInQuestionary = (int)foundRowsQuestionary[0][0];
-                    int answerCount = (int)foundRowsQuestionary[0][coloumnId];
+                    int answerCount = (int)foundRowsQuestionary[0][answerId];
+                    string answerColumnName = WorkerWithAnswer.getColoumnNameByAnswerId(answerId);
                     //выполняю обновление базы
-                    string updateSql = "update Questionary set " + getColoumnNameByAnswer(curPair.answer) + " = " + (answerCount + 1) + " where id = " + idInQuestionary;
-                    OleDbCommand command = new OleDbCommand(updateSql, dbWorker.connection);
-                    dbWorker.connection.Open();
-                    command.ExecuteNonQuery();
-                    dbWorker.connection.Close();
+
+                    dbWorker.updatePositionInQuestinary(idOfOutcome, curPairQuestionId, answerColumnName);
+
+
+
+                    //string updateSql = "update Questionary set " + answerColumnName + " = " + (answerCount + 1) + " where id = " + idInQuestionary;
+                    //OleDbCommand command = new OleDbCommand(updateSql, dbWorker.connection);
+                    //dbWorker.connection.Open();
+                    //command.ExecuteNonQuery();
+                    //dbWorker.connection.Close();
                 }
             }
 
             MessageBox.Show("Результат учтен");
         }
 
-        private int getColoumnIdByAnswer(Answer ans)
-        {
-            int result = 0;
-            switch (ans)
-            {
-                case Answer.YES:
-                    result = 3;
-                    break;
-                case Answer.NO:
-                    result = 4;
-                    break;
-                case Answer.DONTKNOW:
-                    result = 5;
-                    break;
-                case Answer.NOMATTER:
-                    result = 6;
-                    break;
-                default:
-                    result = 0;
-                    break;
-            }
-            if (result == 0)
-                MessageBox.Show("Ошибка в private int getColoumnIdByAnswer(Answer ans) ");
-            return result;
-        }
-
-        private string getColoumnNameByAnswer(Answer ans)
-        {
-            string result = null;
-            switch (ans)
-            {
-                case Answer.YES:
-                    result = "yesCount";
-                    break;
-                case Answer.NO:
-                    result = "noCount";
-                    break;
-                case Answer.DONTKNOW:
-                    result = "dontKnowCount";
-                    break;
-                case Answer.NOMATTER:
-                    result = "noMatterCount";
-                    break;
-                default:
-                    result = null;
-                    break;
-            }
-            if (result == null)
-                MessageBox.Show("Ошибка в private string getColoumnNameByAnswer(Answer ans)");
-            return result;
-        }
-
         private void updateCountClassificationForOutcomeInTableOutcome(int idOfOutcome)
         {
-            string selectStr = "id = " + idOfOutcome;
-            DataRow[] foundRowsOutcome = dSet.Tables["Outcome"].Select(selectStr);
+            //string selectStr = "id = " + idOfOutcome;
+            //DataRow[] foundRowsOutcome = dSet.Tables["Outcome"].Select(selectStr);
 
-            int oldCountClassification = (int)foundRowsOutcome[0]["countClassification"];
+            //int oldCountClassification = (int)foundRowsOutcome[0]["countClassification"];
 
-            string updateSql = "update Outcome set countClassification = " + (oldCountClassification + 1) + " where id = " + idOfOutcome;
-            OleDbCommand command = new OleDbCommand(updateSql, dbWorker.connection);
-            dbWorker.connection.Open();
-            command.ExecuteNonQuery();
-            dbWorker.connection.Close();
+            //string updateSql = "update Outcome set countClassification = " + (oldCountClassification + 1) + " where id = " + idOfOutcome;
+            //OleDbCommand command = new OleDbCommand(updateSql, dbWorker.connection);
+            //dbWorker.connection.Open();
+            //command.ExecuteNonQuery();
+            //dbWorker.connection.Close();
+
+            dbWorker.updateCountClassificationForOutcome(idOfOutcome);
         }
 
         private void btnGoToKBEditForm_Click(object sender, EventArgs e)
@@ -605,11 +664,11 @@ namespace ES_classification
 
         private void btnSelectQuestion_Click(object sender, EventArgs e)
         {
-            pair p = new pair();
-            p.questionId = System.Convert.ToInt32(dgvQuestion.SelectedRows[0].Cells[0].Value);
-
-
-            int c = (int)dtSession.Compute("Count (questionId)", "questionId = " + p.questionId);
+            //pair p = new pair();
+            int questionId = System.Convert.ToInt32(dgvQuestion.SelectedRows[0].Cells[0].Value);
+            Answer answer = Answer.YES;
+            //ООООООООООООООООООООООООООООПААААААААААААСНООООООООООООООООООООООООООО
+            int c = (int)dtSession.Compute("Count (questionId)", "questionId = " + questionId);
             if (c != 0)
             {
                 MessageBox.Show("На этот вопрос ответ уже был выбран!");
@@ -619,13 +678,13 @@ namespace ES_classification
             string questionPhrase = dgvQuestion.SelectedRows[0].Cells[1].Value.ToString();
 
             if (rbYes.Checked)
-                p.answer = Answer.YES;
+                answer = Answer.YES;
             if (rbNo.Checked)
-                p.answer = Answer.NO;
+                answer = Answer.NO;
             if (rbDontKnow.Checked)
-                p.answer = Answer.DONTKNOW;
+                answer = Answer.DONTKNOW;
             if (rbNoMatter.Checked)
-                p.answer = Answer.NOMATTER;
+                answer = Answer.NOMATTER;
 
             //DataRow dr = dtSession.NewRow();
             //dr[0] = p.questionId;
@@ -633,21 +692,62 @@ namespace ES_classification
             //dr[2] = getTranslateOfAnswer(p.answer);
 
             //dtSession.Rows.Add(dr);
-            addRowToDtSession(p, questionPhrase);
-
-            session.Add(p);
+            //addRowToDtSession(p, questionPhrase);
+            addRowToDtSession(questionId, questionPhrase, answer);
+            //session.Add(p);
 
             updateDtProbList();
         }
 
-        private void addRowToDtSession(pair p, string questionPhrase)
-        {
-            DataRow dr = dtSession.NewRow();
-            dr[0] = p.questionId;
-            dr[1] = questionPhrase;
-            dr[2] = getTranslateOfAnswer(p.answer);
+        //private void addRowToDtSession(Pair p, string questionPhrase)
+        //{
+        //    DataRow dr = dtSession.NewRow();
+        //    dr["questionId"] = p.questionId;
+        //    dr["questionPhrase"] = questionPhrase;
+        //    dr["answerPhrase"] = WorkerWithAnswer.getTranslateOfAnswer(p.answer);
+        //    dr["answerId"] = (int)p.answer + 1;
 
-            dtSession.Rows.Add(dr);
+        //    dtSession.Rows.Add(dr);
+        //}
+
+        private void addRowToDtSession(int questionId, string questionPhrase, Answer ans)
+        {
+            //int c = (int)dtSession.Compute("Count (questionId)", "questionId = " + questionId);
+
+            DataRow[] rowWithCurrentQuestionId = dtSession.Select("questionId = " + questionId);
+            if (rowWithCurrentQuestionId.Length != 0)
+            {
+                DialogResult dialogResult = MessageBox.Show("На этот вопрос ответ уже был выбран! Изменить ответ на новый?", "Вопрос", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    rowWithCurrentQuestionId[0].Delete();
+
+                    DataRow dr = dtSession.NewRow();
+                    dr["questionId"] = questionId;
+                    dr["questionPhrase"] = questionPhrase;
+                    dr["answerPhrase"] = WorkerWithAnswer.getTranslateOfAnswer(ans);
+                    dr["answerId"] = WorkerWithAnswer.getColoumnIdByAnswer(ans);
+
+                    dtSession.Rows.Add(dr);
+                }
+                else
+                {
+                    return;
+                }
+                //MessageBox.Show("На этот вопрос ответ уже был выбран! Изменить ответ на новый?");
+                //return;
+            }
+            else
+            {
+                DataRow dr2 = dtSession.NewRow();
+                dr2["questionId"] = questionId;
+                dr2["questionPhrase"] = questionPhrase;
+                dr2["answerPhrase"] = WorkerWithAnswer.getTranslateOfAnswer(ans);
+                dr2["answerId"] = WorkerWithAnswer.getColoumnIdByAnswer(ans);
+
+                dtSession.Rows.Add(dr2);
+            }
+
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -655,52 +755,21 @@ namespace ES_classification
 
         }
 
-        private void cbManualMode_CheckedChanged(object sender, EventArgs e)
-        {
-            if (cbManualMode.Checked == true)
-            {
-                //gbAutoMode.Enabled = false;
-                gbManualMode.Enabled = true;
-            }
-            else
-            {
-                gbAutoMode.Enabled = true;
-                gbManualMode.Enabled = false;
-            }
-            session.Clear();
-            dtSession.Clear();
-        }
-
-        private string getTranslateOfAnswer(Answer a)
-        {
-            string result;
-            switch (a)
-            {
-                case Answer.YES:
-                    {
-                        result = "да";
-                        break;
-                    }
-                case Answer.NO:
-                    {
-                        result = "нет";
-                        break;
-                    }
-                case Answer.NOMATTER:
-                    {
-                        result = "не имеет значения";
-                        break;
-                    }
-                case Answer.DONTKNOW:
-                    {
-                        result = "не известно";
-                        break;
-                    }
-                default:
-                    throw new Exception("Ошибка получения перевода ответа!");
-            }
-            return result;
-        }
+        //private void cbManualMode_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    if (cbManualMode.Checked == true)
+        //    {
+        //        //gbAutoMode.Enabled = false;
+        //        gbManualMode.Enabled = true;
+        //    }
+        //    else
+        //    {
+        //        gbAutoMode.Enabled = true;
+        //        gbManualMode.Enabled = false;
+        //    }
+        //    //session.Clear();
+        //    dtSession.Clear();
+        //}
 
         private void getResult()
         {
@@ -719,27 +788,38 @@ namespace ES_classification
             //string maxProbEntity = foundRows[0][1].ToString();
             //int idOfoutcome = (int)foundRows[0][0];
 
-            DialogResult result = MessageBox.Show(
-                "Это - " + maxProbOutcomeFromDview.TrimEnd(new char[] { ' ' }) +
-                " c вероятностью " + maxProb +
-                ". Правильно? ", "Вывод", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            string resultString = "Это - " + maxProbOutcomeFromDview.TrimEnd(new char[] { ' ' }) + " c вероятностью " + maxProb;
 
-            if (result == DialogResult.Yes)
+            if (chkBoxTrainingMode.Checked == true)
             {
-                updateQuestionaryForOutcome(this.session, idOfOutcomeFromDview);
-                updateCountClassificationForOutcomeInTableOutcome(idOfOutcomeFromDview);
 
-                btn_stop_Click(null, null);
+                DialogResult result = MessageBox.Show(
+                    "Это - " + maxProbOutcomeFromDview.TrimEnd(new char[] { ' ' }) +
+                    " c вероятностью " + maxProb +
+                    ". Правильно? ", "Вывод", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (result == DialogResult.Yes)
+                {
+                    updateQuestionaryForOutcome(idOfOutcomeFromDview);
+                    updateCountClassificationForOutcomeInTableOutcome(idOfOutcomeFromDview);
+
+                    btn_stop_Click(null, null);
+                }
+                if (result == DialogResult.No)
+                {
+                    SelectOutcomeWindow sew = new SelectOutcomeWindow(this.dbWorker);
+                    sew.Owner = this;
+                    sew.ShowDialog();
+
+                    updateQuestionaryForOutcome(getIdOfOutcome);
+                    updateCountClassificationForOutcomeInTableOutcome(getIdOfOutcome);
+
+                    btn_stop_Click(null, null);
+                }
             }
-            if (result == DialogResult.No)
+            else
             {
-                SelectOutcomeWindow sew = new SelectOutcomeWindow(this.dbWorker);
-                sew.Owner = this;
-                sew.ShowDialog();
-
-                updateQuestionaryForOutcome(this.session, getIdOfOutcome);
-                updateCountClassificationForOutcomeInTableOutcome(getIdOfOutcome);
-
+                DialogResult res = MessageBox.Show(resultString, "Вывод:", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
                 btn_stop_Click(null, null);
             }
         }
@@ -751,65 +831,82 @@ namespace ES_classification
 
         private void btnClearSession_Click(object sender, EventArgs e)
         {
-            session.Clear();
+            //session.Clear();
             dtSession.Clear();
             updateDtProbList();
         }
 
         private void btnDeleteQuestion_Click(object sender, EventArgs e)
         {
+            if (dgvSession.SelectedRows[0] == null)
+                return;
             int questionId = (int)dgvSession.SelectedRows[0].Cells[0].Value;
 
             dtSession.Select("questionId = " + questionId)[0].Delete();
             //throw new Exception();
 
-            int index = getIndexInSessionPairWithQuestionId(questionId);
+           // int index = getIndexInSessionPairWithQuestionId(questionId);
 
-            if (index != -1)
-                session.RemoveAt(index);
-            else
-                throw new Exception();
+          //  if (index != -1)
+          //      session.RemoveAt(index);
+          //  else
+          //      throw new Exception();
 
             updateDtProbList();
-       
         }
 
-        private int getIndexInSessionPairWithQuestionId(int questionId)
+        //private int getIndexInSessionPairWithQuestionId(int questionId)
+        //{
+        //    int result;
+        //    pair p = new pair();
+        //    p.questionId = questionId;
+
+        //    p.answer = Answer.YES;
+        //    result = session.IndexOf(p);
+        //    if (result != -1)
+        //        return result;
+
+        //    p.answer = Answer.NO;
+        //    result = session.IndexOf(p);
+        //    if (result != -1)
+        //        return result;
+
+
+        //    p.answer = Answer.NOMATTER;
+        //    result = session.IndexOf(p);
+        //    if (result != -1)
+        //        return result;
+
+        //    p.answer = Answer.DONTKNOW;
+        //    result = session.IndexOf(p);
+        //    if (result != -1)
+        //        return result;
+
+        //    return result;
+        //}
+
+        private void btnGoToProductionES_Click(object sender, EventArgs e)
         {
-            int result;
-            pair p = new pair();
-            p.questionId = questionId;
-
-            p.answer = Answer.YES;
-            result = session.IndexOf(p);
-            if (result != -1)
-                return result;
-
-            p.answer = Answer.NO;
-            result = session.IndexOf(p);
-            if (result != -1)
-                return result;
-
-
-            p.answer = Answer.NOMATTER;
-            result = session.IndexOf(p);
-            if (result != -1)
-                return result;
-
-            p.answer = Answer.DONTKNOW;
-            result = session.IndexOf(p);
-            if (result != -1)
-                return result;
-
-            return result;
+            startForm sf = new startForm(dtSession, this.dbWorker);
+            sf.ShowDialog();
         }
+
+        private void getInformationAboutSelectedQuestion(out int questionId, out string questionPhrase)
+        {
+            questionId = System.Convert.ToInt32(dgvQuestion.SelectedRows[0].Cells[0].Value);
+            questionPhrase = dgvQuestion.SelectedRows[0].Cells[1].Value.ToString();
+        }
+
     }
 
 }
 
 //TODO: 
-// 1) сделать возможность запуска автоматического выбора вопросов после ручного прохода
-// 2) сделать сессию полноценным dataTable???
-// 3) убрать sql-запросы c форм в dbWorker
+// done 1) сделать возможность запуска автоматического выбора вопросов после ручного прохода
+// done 2) сделать сессию полноценным dataTable??? 
+// done 3) убрать sql-запросы c форм в dbWorker
 // 4) сделать mvp версию
 // 5) сменить checkBox на кнопки и изменить обработчики кликов на ответы
+// 6) синхронизация бз
+// 7) хранение 2бд в одной бз
+// 8) возвращение промежуточных результатов из работы продукционной системы

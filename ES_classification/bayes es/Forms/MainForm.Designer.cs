@@ -42,24 +42,28 @@
             this.btnGoToKBEditForm = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.gbManualMode = new System.Windows.Forms.GroupBox();
-            this.btnClearSession = new System.Windows.Forms.Button();
-            this.btnGetResult = new System.Windows.Forms.Button();
             this.dgvSession = new System.Windows.Forms.DataGridView();
-            this.btnDeleteQuestion = new System.Windows.Forms.Button();
-            this.btnSelectQuestion = new System.Windows.Forms.Button();
             this.gbAnswerManualMode = new System.Windows.Forms.GroupBox();
             this.rbYes = new System.Windows.Forms.RadioButton();
             this.rbDontKnow = new System.Windows.Forms.RadioButton();
             this.rbNo = new System.Windows.Forms.RadioButton();
             this.rbNoMatter = new System.Windows.Forms.RadioButton();
+            this.btnClearSession = new System.Windows.Forms.Button();
+            this.btnDeleteQuestion = new System.Windows.Forms.Button();
+            this.btnSelectQuestion = new System.Windows.Forms.Button();
+            this.btnGetResult = new System.Windows.Forms.Button();
             this.gbAutoMode = new System.Windows.Forms.GroupBox();
+            this.btnGoToProductionES = new System.Windows.Forms.Button();
             this.cbManualMode = new System.Windows.Forms.CheckBox();
+            this.chkBoxTrainingMode = new System.Windows.Forms.CheckBox();
+            this.gbAnswers = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.dgvQuestion)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProbList)).BeginInit();
             this.gbManualMode.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSession)).BeginInit();
             this.gbAnswerManualMode.SuspendLayout();
             this.gbAutoMode.SuspendLayout();
+            this.gbAnswers.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -103,8 +107,7 @@
             // 
             // btn_yes
             // 
-            this.btn_yes.Enabled = false;
-            this.btn_yes.Location = new System.Drawing.Point(20, 179);
+            this.btn_yes.Location = new System.Drawing.Point(20, 19);
             this.btn_yes.Name = "btn_yes";
             this.btn_yes.Size = new System.Drawing.Size(217, 23);
             this.btn_yes.TabIndex = 5;
@@ -114,8 +117,7 @@
             // 
             // btn_no
             // 
-            this.btn_no.Enabled = false;
-            this.btn_no.Location = new System.Drawing.Point(20, 208);
+            this.btn_no.Location = new System.Drawing.Point(20, 48);
             this.btn_no.Name = "btn_no";
             this.btn_no.Size = new System.Drawing.Size(217, 23);
             this.btn_no.TabIndex = 6;
@@ -125,8 +127,7 @@
             // 
             // btn_dontKnow
             // 
-            this.btn_dontKnow.Enabled = false;
-            this.btn_dontKnow.Location = new System.Drawing.Point(20, 237);
+            this.btn_dontKnow.Location = new System.Drawing.Point(20, 77);
             this.btn_dontKnow.Name = "btn_dontKnow";
             this.btn_dontKnow.Size = new System.Drawing.Size(217, 23);
             this.btn_dontKnow.TabIndex = 7;
@@ -136,8 +137,7 @@
             // 
             // btn_noMatter
             // 
-            this.btn_noMatter.Enabled = false;
-            this.btn_noMatter.Location = new System.Drawing.Point(20, 266);
+            this.btn_noMatter.Location = new System.Drawing.Point(20, 106);
             this.btn_noMatter.Name = "btn_noMatter";
             this.btn_noMatter.Size = new System.Drawing.Size(217, 23);
             this.btn_noMatter.TabIndex = 8;
@@ -175,12 +175,12 @@
             this.dgvProbList.Location = new System.Drawing.Point(519, 25);
             this.dgvProbList.Name = "dgvProbList";
             this.dgvProbList.ReadOnly = true;
-            this.dgvProbList.Size = new System.Drawing.Size(528, 482);
+            this.dgvProbList.Size = new System.Drawing.Size(338, 482);
             this.dgvProbList.TabIndex = 11;
             // 
             // btnGoToKBEditForm
             // 
-            this.btnGoToKBEditForm.Location = new System.Drawing.Point(284, 369);
+            this.btnGoToKBEditForm.Location = new System.Drawing.Point(281, 420);
             this.btnGoToKBEditForm.Name = "btnGoToKBEditForm";
             this.btnGoToKBEditForm.Size = new System.Drawing.Size(217, 48);
             this.btnGoToKBEditForm.TabIndex = 12;
@@ -190,7 +190,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(348, 444);
+            this.button1.Location = new System.Drawing.Point(735, 551);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 13;
@@ -200,72 +200,27 @@
             // 
             // gbManualMode
             // 
-            this.gbManualMode.Controls.Add(this.btnClearSession);
-            this.gbManualMode.Controls.Add(this.btnGetResult);
             this.gbManualMode.Controls.Add(this.dgvSession);
-            this.gbManualMode.Controls.Add(this.btnDeleteQuestion);
-            this.gbManualMode.Controls.Add(this.btnSelectQuestion);
-            this.gbManualMode.Controls.Add(this.gbAnswerManualMode);
             this.gbManualMode.Enabled = false;
-            this.gbManualMode.Location = new System.Drawing.Point(15, 532);
+            this.gbManualMode.Location = new System.Drawing.Point(247, 532);
             this.gbManualMode.Name = "gbManualMode";
-            this.gbManualMode.Size = new System.Drawing.Size(926, 234);
+            this.gbManualMode.Size = new System.Drawing.Size(292, 208);
             this.gbManualMode.TabIndex = 14;
             this.gbManualMode.TabStop = false;
-            this.gbManualMode.Text = "Работа с ручным выбором вопроса";
-            // 
-            // btnClearSession
-            // 
-            this.btnClearSession.Location = new System.Drawing.Point(212, 90);
-            this.btnClearSession.Name = "btnClearSession";
-            this.btnClearSession.Size = new System.Drawing.Size(138, 23);
-            this.btnClearSession.TabIndex = 9;
-            this.btnClearSession.Text = "Очистить список";
-            this.btnClearSession.UseVisualStyleBackColor = true;
-            this.btnClearSession.Click += new System.EventHandler(this.btnClearSession_Click);
-            // 
-            // btnGetResult
-            // 
-            this.btnGetResult.Location = new System.Drawing.Point(212, 119);
-            this.btnGetResult.Name = "btnGetResult";
-            this.btnGetResult.Size = new System.Drawing.Size(135, 23);
-            this.btnGetResult.TabIndex = 8;
-            this.btnGetResult.Text = "Получить результат";
-            this.btnGetResult.UseVisualStyleBackColor = true;
-            this.btnGetResult.Click += new System.EventHandler(this.btnGetResult_Click);
+            this.gbManualMode.Text = "Текущая сессия сеанса";
             // 
             // dgvSession
             // 
             this.dgvSession.AllowUserToAddRows = false;
             this.dgvSession.AllowUserToDeleteRows = false;
             this.dgvSession.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvSession.Location = new System.Drawing.Point(356, 19);
+            this.dgvSession.Location = new System.Drawing.Point(6, 19);
             this.dgvSession.MultiSelect = false;
             this.dgvSession.Name = "dgvSession";
             this.dgvSession.ReadOnly = true;
             this.dgvSession.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvSession.Size = new System.Drawing.Size(274, 189);
+            this.dgvSession.Size = new System.Drawing.Size(274, 183);
             this.dgvSession.TabIndex = 7;
-            // 
-            // btnDeleteQuestion
-            // 
-            this.btnDeleteQuestion.Location = new System.Drawing.Point(212, 61);
-            this.btnDeleteQuestion.Name = "btnDeleteQuestion";
-            this.btnDeleteQuestion.Size = new System.Drawing.Size(138, 23);
-            this.btnDeleteQuestion.TabIndex = 6;
-            this.btnDeleteQuestion.Text = "!!!Удалить вопрос";
-            this.btnDeleteQuestion.UseVisualStyleBackColor = true;
-            this.btnDeleteQuestion.Click += new System.EventHandler(this.btnDeleteQuestion_Click);
-            // 
-            // btnSelectQuestion
-            // 
-            this.btnSelectQuestion.Location = new System.Drawing.Point(212, 32);
-            this.btnSelectQuestion.Name = "btnSelectQuestion";
-            this.btnSelectQuestion.Size = new System.Drawing.Size(138, 23);
-            this.btnSelectQuestion.TabIndex = 5;
-            this.btnSelectQuestion.Text = "Ответить на вопрос";
-            this.btnSelectQuestion.UseVisualStyleBackColor = true;
-            this.btnSelectQuestion.Click += new System.EventHandler(this.btnSelectQuestion_Click);
             // 
             // gbAnswerManualMode
             // 
@@ -273,7 +228,8 @@
             this.gbAnswerManualMode.Controls.Add(this.rbDontKnow);
             this.gbAnswerManualMode.Controls.Add(this.rbNo);
             this.gbAnswerManualMode.Controls.Add(this.rbNoMatter);
-            this.gbAnswerManualMode.Location = new System.Drawing.Point(6, 19);
+            this.gbAnswerManualMode.Enabled = false;
+            this.gbAnswerManualMode.Location = new System.Drawing.Point(991, 474);
             this.gbAnswerManualMode.Name = "gbAnswerManualMode";
             this.gbAnswerManualMode.Size = new System.Drawing.Size(200, 125);
             this.gbAnswerManualMode.TabIndex = 4;
@@ -322,38 +278,117 @@
             this.rbNoMatter.Text = "не имеет значения";
             this.rbNoMatter.UseVisualStyleBackColor = true;
             // 
+            // btnClearSession
+            // 
+            this.btnClearSession.Location = new System.Drawing.Point(323, 347);
+            this.btnClearSession.Name = "btnClearSession";
+            this.btnClearSession.Size = new System.Drawing.Size(138, 23);
+            this.btnClearSession.TabIndex = 9;
+            this.btnClearSession.Text = "Очистить список";
+            this.btnClearSession.UseVisualStyleBackColor = true;
+            this.btnClearSession.Click += new System.EventHandler(this.btnClearSession_Click);
+            // 
+            // btnDeleteQuestion
+            // 
+            this.btnDeleteQuestion.Location = new System.Drawing.Point(991, 624);
+            this.btnDeleteQuestion.Name = "btnDeleteQuestion";
+            this.btnDeleteQuestion.Size = new System.Drawing.Size(138, 23);
+            this.btnDeleteQuestion.TabIndex = 6;
+            this.btnDeleteQuestion.Text = "Удалить вопрос";
+            this.btnDeleteQuestion.UseVisualStyleBackColor = true;
+            this.btnDeleteQuestion.Click += new System.EventHandler(this.btnDeleteQuestion_Click);
+            // 
+            // btnSelectQuestion
+            // 
+            this.btnSelectQuestion.Location = new System.Drawing.Point(991, 653);
+            this.btnSelectQuestion.Name = "btnSelectQuestion";
+            this.btnSelectQuestion.Size = new System.Drawing.Size(138, 23);
+            this.btnSelectQuestion.TabIndex = 5;
+            this.btnSelectQuestion.Text = "Ответить на вопрос";
+            this.btnSelectQuestion.UseVisualStyleBackColor = true;
+            this.btnSelectQuestion.Click += new System.EventHandler(this.btnSelectQuestion_Click);
+            // 
+            // btnGetResult
+            // 
+            this.btnGetResult.Location = new System.Drawing.Point(281, 318);
+            this.btnGetResult.Name = "btnGetResult";
+            this.btnGetResult.Size = new System.Drawing.Size(217, 23);
+            this.btnGetResult.TabIndex = 8;
+            this.btnGetResult.Text = "Получить результат";
+            this.btnGetResult.UseVisualStyleBackColor = true;
+            this.btnGetResult.Click += new System.EventHandler(this.btnGetResult_Click);
+            // 
             // gbAutoMode
             // 
             this.gbAutoMode.Controls.Add(this.btn_start);
             this.gbAutoMode.Controls.Add(this.btn_stop);
-            this.gbAutoMode.Controls.Add(this.btn_yes);
-            this.gbAutoMode.Controls.Add(this.btn_no);
-            this.gbAutoMode.Controls.Add(this.btn_dontKnow);
-            this.gbAutoMode.Controls.Add(this.btn_noMatter);
             this.gbAutoMode.Controls.Add(this.lbl_currentQuestion);
             this.gbAutoMode.Location = new System.Drawing.Point(261, 12);
             this.gbAutoMode.Name = "gbAutoMode";
-            this.gbAutoMode.Size = new System.Drawing.Size(252, 303);
+            this.gbAutoMode.Size = new System.Drawing.Size(252, 135);
             this.gbAutoMode.TabIndex = 15;
             this.gbAutoMode.TabStop = false;
             this.gbAutoMode.Text = "Автоматический выбор вопроса";
             // 
+            // btnGoToProductionES
+            // 
+            this.btnGoToProductionES.Location = new System.Drawing.Point(724, 665);
+            this.btnGoToProductionES.Name = "btnGoToProductionES";
+            this.btnGoToProductionES.Size = new System.Drawing.Size(133, 69);
+            this.btnGoToProductionES.TabIndex = 17;
+            this.btnGoToProductionES.Text = "Перейти в систему продукционного вывода";
+            this.btnGoToProductionES.UseVisualStyleBackColor = true;
+            this.btnGoToProductionES.Click += new System.EventHandler(this.btnGoToProductionES_Click);
+            // 
             // cbManualMode
             // 
             this.cbManualMode.AutoSize = true;
-            this.cbManualMode.Location = new System.Drawing.Point(319, 509);
+            this.cbManualMode.Enabled = false;
+            this.cbManualMode.Location = new System.Drawing.Point(991, 723);
             this.cbManualMode.Name = "cbManualMode";
             this.cbManualMode.Size = new System.Drawing.Size(98, 17);
             this.cbManualMode.TabIndex = 16;
             this.cbManualMode.Text = "Ручной режим";
             this.cbManualMode.UseVisualStyleBackColor = true;
-            this.cbManualMode.CheckedChanged += new System.EventHandler(this.cbManualMode_CheckedChanged);
+            // 
+            // chkBoxTrainingMode
+            // 
+            this.chkBoxTrainingMode.AutoSize = true;
+            this.chkBoxTrainingMode.Checked = true;
+            this.chkBoxTrainingMode.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBoxTrainingMode.Location = new System.Drawing.Point(303, 474);
+            this.chkBoxTrainingMode.Name = "chkBoxTrainingMode";
+            this.chkBoxTrainingMode.Size = new System.Drawing.Size(158, 17);
+            this.chkBoxTrainingMode.TabIndex = 18;
+            this.chkBoxTrainingMode.Text = "Режим обучения системы";
+            this.chkBoxTrainingMode.UseVisualStyleBackColor = true;
+            // 
+            // gbAnswers
+            // 
+            this.gbAnswers.Controls.Add(this.btn_yes);
+            this.gbAnswers.Controls.Add(this.btn_noMatter);
+            this.gbAnswers.Controls.Add(this.btn_dontKnow);
+            this.gbAnswers.Controls.Add(this.btn_no);
+            this.gbAnswers.Location = new System.Drawing.Point(261, 153);
+            this.gbAnswers.Name = "gbAnswers";
+            this.gbAnswers.Size = new System.Drawing.Size(252, 142);
+            this.gbAnswers.TabIndex = 19;
+            this.gbAnswers.TabStop = false;
+            this.gbAnswers.Text = "Ответы";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1112, 752);
+            this.ClientSize = new System.Drawing.Size(1154, 752);
+            this.Controls.Add(this.btnClearSession);
+            this.Controls.Add(this.gbAnswerManualMode);
+            this.Controls.Add(this.gbAnswers);
+            this.Controls.Add(this.btnGetResult);
+            this.Controls.Add(this.btnDeleteQuestion);
+            this.Controls.Add(this.chkBoxTrainingMode);
+            this.Controls.Add(this.btnSelectQuestion);
+            this.Controls.Add(this.btnGoToProductionES);
             this.Controls.Add(this.cbManualMode);
             this.Controls.Add(this.gbAutoMode);
             this.Controls.Add(this.gbManualMode);
@@ -376,6 +411,7 @@
             this.gbAnswerManualMode.PerformLayout();
             this.gbAutoMode.ResumeLayout(false);
             this.gbAutoMode.PerformLayout();
+            this.gbAnswers.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -407,8 +443,11 @@
         private System.Windows.Forms.DataGridView dgvSession;
         private System.Windows.Forms.Button btnDeleteQuestion;
         private System.Windows.Forms.GroupBox gbAutoMode;
-        private System.Windows.Forms.CheckBox cbManualMode;
         private System.Windows.Forms.Button btnClearSession;
+        private System.Windows.Forms.Button btnGoToProductionES;
+        private System.Windows.Forms.CheckBox cbManualMode;
+        private System.Windows.Forms.CheckBox chkBoxTrainingMode;
+        private System.Windows.Forms.GroupBox gbAnswers;
     }
 }
 

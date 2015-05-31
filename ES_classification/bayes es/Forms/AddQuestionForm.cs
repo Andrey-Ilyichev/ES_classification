@@ -13,13 +13,27 @@ namespace ES_classification
     {
         private Form motherForm;
         private DBWorker dbWorker;
+        private bool isEditingMode;
+        private int questionId;
+        private int previousQuestionString;
+
         private DataTable dtFunctionalArea;
 
-        public AddQuestionForm(Form f, DBWorker dbWorker)
+        public AddQuestionForm(Form f, DBWorker dbWorker, bool isEditingMode, int questionId, string previousQuestionString)
         {
             InitializeComponent();
             this.motherForm = f;
             this.dbWorker = dbWorker;
+
+            this.isEditingMode = isEditingMode;
+            this.questionId = questionId;
+
+            if (isEditingMode == true)
+            {
+                btnAddQuestion.Text = "Изменить вопрос";
+                tbQuestionField.Text = previousQuestionString;
+ 
+            }
 
             updateCmbFunctionalArea();
         }
@@ -61,12 +75,20 @@ namespace ES_classification
             }
             try
             {
-                dbWorker.addNewQuestion(questionString, functionalAreaId);
-                MessageBox.Show("Вопрос \"" + questionString + "\" успешно добавлен");
+                if (isEditingMode == false)
+                {
+                    dbWorker.addNewQuestion(questionString, functionalAreaId);
+                    MessageBox.Show("Вопрос \"" + questionString + "\" успешно добавлен");
+                }
+                else 
+                {
+                    dbWorker.updateQuestion(questionId, functionalAreaId, questionString);
+                    MessageBox.Show("Вопрос \"" + questionString + "\" успешно изменен");
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Oшибка при добавлении вопроса! " + ex.Message.ToString());
+                MessageBox.Show("Ошибка операции! " + ex.Message.ToString());
             }
         }
 
