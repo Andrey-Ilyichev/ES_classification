@@ -190,7 +190,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(735, 551);
+            this.button1.Location = new System.Drawing.Point(915, 403);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 13;
@@ -380,7 +380,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1154, 752);
+            this.ClientSize = new System.Drawing.Size(895, 752);
             this.Controls.Add(this.btnClearSession);
             this.Controls.Add(this.gbAnswerManualMode);
             this.Controls.Add(this.gbAnswers);
