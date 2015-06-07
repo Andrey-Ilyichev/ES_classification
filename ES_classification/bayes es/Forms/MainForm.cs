@@ -14,7 +14,10 @@ namespace ES_classification
 
     public partial class MainForm : Form
     {
-        private int currentQuestionId = 0;
+        //presenterBayesEsMainForm presenter;
+        ServiceReferenceForExpertSystem.WebServiceForExpertSystemSoapClient webClient = new ServiceReferenceForExpertSystem.WebServiceForExpertSystemSoapClient();
+
+        private int currentQuestionId = -1;
         //private Pair currentPair;
         private DBWorker dbWorker;
         private DataSet dSet;
@@ -23,8 +26,8 @@ namespace ES_classification
         private DataTable dtSession;
 
         public int getIdOfOutcome = -1;
-        private int questionCountBeforeAnswer = 5;
-        private int currentQuestionCount = 0;
+      //  private int questionCountBeforeAnswer = 5;
+       // private int currentQuestionCount = 0;
 
         private bool isAutoMode = false;
 
@@ -32,30 +35,37 @@ namespace ES_classification
 
         private void getDataSetAndResetDGVquestion()
         {
-            dSet = dbWorker.getDataSet();
-
-            dgvQuestion.DataSource = dSet.Tables["Question"];
-
-            #region получить и установить таблицу вопросов
-            dgvQuestion.Columns[0].HeaderText = "#";
-            dgvQuestion.Columns[0].Width = 25;
-            dgvQuestion.Columns[1].HeaderText = "Вопрос";
-            dgvQuestion.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            dgvQuestion.Columns[2].Visible = false;
-
-
-            if (dSet.Tables["Question"].Rows.Count == 0)
+            //dSet = dbWorker.getDataSetForBayesSystem();
+            dSet = webClient.dbwGetDataSetForBayesSystem();
+            if (dSet == null)
+                MessageBox.Show("Ошибка при получении данных");
+            else
             {
-                MessageBox.Show("База знаний пуста(отсутствуют вопросы). Рекомендуется перейти к редактированию Базы Знаний");
-                btn_start.Enabled = false;
+                #region получить и установить таблицу вопросов
+                dgvQuestion.DataSource = dSet.Tables["Question"];
+
+                
+                dgvQuestion.Columns[0].HeaderText = "#";
+                dgvQuestion.Columns[0].Width = 25;
+                dgvQuestion.Columns[1].HeaderText = "Вопрос";
+                dgvQuestion.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                dgvQuestion.Columns[2].Visible = false;
+
+
+                if (dSet.Tables["Question"].Rows.Count == 0)
+                {
+                    MessageBox.Show("База знаний пуста(отсутствуют вопросы). Рекомендуется перейти к редактированию Базы Знаний");
+                    btn_start.Enabled = false;
+                }
+
+
+                #endregion
             }
-
-
-            #endregion
         }
 
         public MainForm(DBWorker dbWorker)
         {
+
             InitializeComponent();
             this.dbWorker = dbWorker;
 
@@ -65,6 +75,7 @@ namespace ES_classification
 
         public MainForm()
         {
+
             InitializeComponent();
             this.dbWorker = new DBWorker();
 
@@ -98,8 +109,8 @@ namespace ES_classification
             }
 
 
-            dgvSession.Columns["questionId"].Visible = false;
-            dgvSession.Columns["answerId"].Visible = false;
+          //  dgvSession.Columns["questionId"].Visible = false;
+          //  dgvSession.Columns["answerId"].Visible = false;
             dgvSession.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
 
@@ -117,7 +128,7 @@ namespace ES_classification
             DataColumn currentProbability = new DataColumn("currentProbability", typeof(float));
             currentProbability.Caption = "Текущая вероятность";
 
-            DataColumn сommonProbability = new DataColumn("сommonProbability", typeof(float));
+            DataColumn сommonProbability = new DataColumn("commonProbability", typeof(float));
             сommonProbability.Caption = "Априорная вероятность";
 
             dtProbList.Columns.AddRange(new DataColumn[] { outcomeId, outcomeName, currentProbability, сommonProbability });
@@ -164,12 +175,13 @@ namespace ES_classification
 
 
             //если вопросы закончились
-            if (currentQuestionId > dgvQuestion.RowCount)
+            if (currentQuestionId >= dSet.Tables["Question"].Rows.Count)
             {
                 MessageBox.Show("Вопросы закончились");
                 getResult();
 
-
+                #region it was getResult 
+                /*   
                 //DataView dView = new DataView(dtProbList);
                 //dView.Sort = "currentProbability DESC";
                 //int idOfOutcomeFromDview = (int)dView[0][0];
@@ -208,6 +220,8 @@ namespace ES_classification
 
                 //    btn_stop_Click(null, null);
                 //}
+              */
+                #endregion
 
 
             }//есть ещё вопросы
@@ -220,26 +234,28 @@ namespace ES_classification
               //  else
                 {
                     lbl_currentQuestion.Text = null;
-                    lbl_currentQuestion.Text = dgvQuestion[1, currentQuestionId - 1].Value.ToString();
+                    lbl_currentQuestion.Text = dSet.Tables["Question"].Rows[currentQuestionId]["questionPhrase"].ToString();
+                    //lbl_currentQuestion.Text = dgvQuestion[1, currentQuestionId].Value.ToString();
+                    dgvQuestion.Rows[currentQuestionId].Selected = true;
                 }
             }
         }
 
-        private void askNextQuestion2()//new order
-        {
-            currentQuestionCount++;
+        //private void askNextQuestion2()//new order
+        //{
+        //    currentQuestionCount++;
 
-            if (currentQuestionCount > questionCountBeforeAnswer)
-            {
-                throw new Exception("надо выдать гипотезу!");
-            }
-            else
-            {
-                throw new Exception("задать следующий вопрос!");
-               // int newQuestionId = getNextQuestionId();
-            }
+        //    if (currentQuestionCount > questionCountBeforeAnswer)
+        //    {
+        //        throw new Exception("надо выдать гипотезу!");
+        //    }
+        //    else
+        //    {
+        //        throw new Exception("задать следующий вопрос!");
+        //       // int newQuestionId = getNextQuestionId();
+        //    }
 
-        }
+        //}
 
         private int getNextQuestionId()
         {
@@ -253,13 +269,13 @@ namespace ES_classification
 
             for (int j = 0; j < outcomeCount; j++)// все сущности
             {
-                int jid = (int)dSet.Tables["Outcome"].Rows[j][0];
+                int jid = (int)dSet.Tables["Outcome"].Rows[j]["id"];
 
                 string s = "outcomeId = " + jid;
                 DataRow[] foundRows = dtProbList.Select("outcomeId = " + jid);
                 if (foundRows.Length == 0)
                     MessageBox.Show("проблема в функции updateDtProbList - не нашли сущность по id");
-                float apriorProb = (float)foundRows[0][3];
+                float apriorProb = (float)foundRows[0]["commonProbability"];
 
                 float currentOutcomeProb = apriorProb;
 
@@ -271,7 +287,7 @@ namespace ES_classification
 
                     //int coloumnOfAnswer = getColoumnIdByAnswer(curPair.answer);
                     object obj = dtSession.Rows[k]["answerId"];
-                    int coloumnOfAnswer = (int)obj;
+                    int columnOfAnswer = (int)obj;
 
 
                     float conProbAnswer = 0;
@@ -284,45 +300,46 @@ namespace ES_classification
                     DataRow[] foundRowsQuestionary = dSet.Tables["Questionary"].Select(selectStr);
                     if (foundRowsQuestionary.Length == 0)
                     {
-                        int maxId;
+                      // // int maxId;
 
-                        string selectAll = "";
-                        DataRow[] foundRowsAll = dSet.Tables["Questionary"].Select(selectAll);
-                        if (foundRowsAll.Length == 0)
-                            maxId = 0;
-                        else
-                        {
-                            object maxIdObj = dSet.Tables["Questionary"].Compute("Max(id)", "");
-                            maxId = int.Parse(maxIdObj.ToString());
-                        }
+                      // // string selectAll = "";
 
-                        DataRow dRow = dSet.Tables["Questionary"].NewRow();
+                      //  //DataRow[] foundRowsAll = dSet.Tables["Questionary"].Select(selectAll);
+                      //  //if (foundRowsAll.Length == 0)
+                      //  //    maxId = 0;
+                      //  //else
+                      //  //{
+                      //  //    object maxIdObj = dSet.Tables["Questionary"].Compute("Max(id)", "");
+                      //  //    maxId = int.Parse(maxIdObj.ToString());
+                      //  //}
 
-                        dRow["id"] = maxId + 1;
-                        dRow["outcomeId"] = jid;
-                        dRow["questionId"] = curPairQuestionId;
-                        dRow["yesCount"] = 1;
-                        dRow["noCount"] = 1;
-                        dRow["dontKnowCount"] = 1;
-                        dRow["noMatterCount"] = 1;
+                      //  DataRow dRow = dSet.Tables["Questionary"].NewRow();
 
-                        dSet.Tables["Questionary"].Rows.Add(dRow);
-                        dSet.AcceptChanges();
+                      // // dRow["id"] = maxId + 1;
+                      //  dRow["outcomeId"] = jid;
+                      //  dRow["questionId"] = curPairQuestionId;
+                      //  dRow["yesCount"] = 1;
+                      //  dRow["noCount"] = 1;
+                      //  dRow["dontKnowCount"] = 1;
+                      //  dRow["noMatterCount"] = 1;
 
-                        maxId++;
+                      //  dSet.Tables["Questionary"].Rows.Add(dRow);
+                      //  dSet.AcceptChanges();
 
-                        string selectStrAg = "outcomeId = " + jid + " AND " + " questionId = " + curPairQuestionId;
-                        DataRow[] foundRowsQuestionaryAg = dSet.Tables["Questionary"].Select(selectStrAg);
-                        if (foundRowsQuestionaryAg.Length == 0)
-                        { MessageBox.Show("Problem in searching"); }
+                      ////  maxId++;
 
-                        //string sql = "insert into Questionary (id, outcomeId, questionId, yesCount, noCount, dontKnowCount, noMatterCount) " +
-                        //                                       " values ( " + maxId + " , " + jid + " , " + curPairQuestionId + ", 1, 1, 1, 1)";
-                        //OleDbCommand command = new OleDbCommand(sql, dbWorker.connection);
-                        //dbWorker.connection.Open();
-                        //command.ExecuteNonQuery();
-                        //dbWorker.connection.Close();
-                        dbWorker.insertNewPositionInQuestionary(jid, curPairQuestionId, 1, 1, 1, 1);
+                      //  string selectStrAg = "outcomeId = " + jid + " AND " + " questionId = " + curPairQuestionId;
+                      //  DataRow[] foundRowsQuestionaryAg = dSet.Tables["Questionary"].Select(selectStrAg);
+                      //  if (foundRowsQuestionaryAg.Length == 0)
+                      //  { MessageBox.Show("Problem in searching"); }
+
+                      //  //string sql = "insert into Questionary (id, outcomeId, questionId, yesCount, noCount, dontKnowCount, noMatterCount) " +
+                      //  //                                       " values ( " + maxId + " , " + jid + " , " + curPairQuestionId + ", 1, 1, 1, 1)";
+                      //  //OleDbCommand command = new OleDbCommand(sql, dbWorker.connection);
+                      //  //dbWorker.connection.Open();
+                      //  //command.ExecuteNonQuery();
+                      //  //dbWorker.connection.Close();
+                      //  dbWorker.insertNewPositionInQuestionary(jid, curPairQuestionId, 1, 1, 1, 1);
 
                         conProbAnswer = 1.0f / 4.0f;
                     }
@@ -337,7 +354,7 @@ namespace ES_classification
 
                         if (countCallofQuestionForThisOutcome != 0)
                         {
-                            int countOfAnswer = (int)foundRowsQuestionary[0][coloumnOfAnswer];
+                            int countOfAnswer = (int)foundRowsQuestionary[0][columnOfAnswer];
                             conProbAnswer = (float)(countOfAnswer) / countCallofQuestionForThisOutcome;
                         }
                         else
@@ -348,7 +365,7 @@ namespace ES_classification
                 if (currentOutcomeProb < 0.000001)
                     currentOutcomeProb = 0;
 
-                foundRows[0][2] = currentOutcomeProb;
+                foundRows[0]["currentProbability"] = currentOutcomeProb;
 
 
             }
@@ -360,8 +377,27 @@ namespace ES_classification
             for (int j = 0; j < outcomeCount; j++)// все сущности
             {
                 float curValOfConProb = (float)(dtProbList.Rows[j][2]);
-                dtProbList.Rows[j][2] = curValOfConProb / sumOfCurrentOutcomeProb;
+                dtProbList.Rows[j]["currentProbability"] = curValOfConProb / sumOfCurrentOutcomeProb;
             }
+        }
+
+        private void workWithAnswer(Answer answer)
+        {
+            int questionId;
+            string questionPhrase;
+            getInformationAboutSelectedQuestion(out questionId, out questionPhrase);
+
+            addRowToDtSession(questionId, questionPhrase, answer);
+            // setStructureDtSession();
+            updateDtProbList();
+
+
+            if (isAutoMode == true)
+            {
+                askNextQuestion();
+            }
+            else
+            { }
         }
 
         private void btn_start_Click(object sender, EventArgs e)
@@ -369,7 +405,7 @@ namespace ES_classification
             btn_start.Enabled = false;
             isAutoMode = true;
 
-            gbManualMode.Enabled = false;
+            //gbManualMode.Enabled = false;
 
             btn_stop.Enabled = true;
             btn_yes.Enabled = true;
@@ -377,123 +413,199 @@ namespace ES_classification
             btn_dontKnow.Enabled = true;
             btn_noMatter.Enabled = true;
 
-            btnClearSession.Enabled = false;
+            //btnClearSession.Enabled = false;
+            dgvQuestion.Enabled = false;
 
             askNextQuestion();
         }
 
         private void btn_yes_Click(object sender, EventArgs e)
         {
-            //currentPair.questionId = currentQuestionId;
-            //currentPair.answer = Answer.YES;
-           //session.Add(currentPair);
+            #region musor
+            //// //currentPair.questionId = currentQuestionId;
+           //// //currentPair.answer = Answer.YES;
+           //////session.Add(currentPair);
 
 
 
-            if (isAutoMode == true)
-            {
-                addRowToDtSession(currentQuestionId, lbl_currentQuestion.Text, Answer.YES);
-                updateDtProbList();
-                askNextQuestion();
-            }
-            else 
-            {
-                int questionId;
-                string questionPhrase;
-                getInformationAboutSelectedQuestion(out questionId, out questionPhrase);
+           //// if (isAutoMode == true)
+           //// {
+           ////     addRowToDtSession(currentQuestionId, lbl_currentQuestion.Text, Answer.YES);
+           ////     updateDtProbList();
+           ////     askNextQuestion();
+           //// }
+           //// else 
+           //// {
+           ////     int questionId;
+           ////     string questionPhrase;
+           ////     getInformationAboutSelectedQuestion(out questionId, out questionPhrase);
 
-                addRowToDtSession(questionId, questionPhrase, Answer.YES);
-                updateDtProbList();
-            }
+           ////     addRowToDtSession(questionId, questionPhrase, Answer.YES);
+           ////     updateDtProbList();
+           //// }
+
+           // int questionId;
+           // string questionPhrase;
+           // getInformationAboutSelectedQuestion(out questionId, out questionPhrase);
+
+           // addRowToDtSession(questionId, questionPhrase, Answer.YES);
+           //// setStructureDtSession();
+           // updateDtProbList();
+
+
+           // if (isAutoMode == true)
+           // {
+           //     askNextQuestion();
+           // }
+           // else
+            // {}
+            #endregion
+            workWithAnswer(Answer.YES);
         }
 
         private void btn_no_Click(object sender, EventArgs e)
         {
-            //currentPair.questionId = currentQuestionId;
-            //currentPair.answer = Answer.NO;
-            //session.Add(currentPair);
+            #region musor
+            // ////currentPair.questionId = currentQuestionId;
+           // ////currentPair.answer = Answer.NO;
+           // ////session.Add(currentPair);
 
-            if (isAutoMode == true)
-            {
-                addRowToDtSession(currentQuestionId, lbl_currentQuestion.Text, Answer.NO);
-                updateDtProbList();
-                askNextQuestion();
-            }
-            else
-            {
-                int questionId;
-                string questionPhrase;
-                getInformationAboutSelectedQuestion(out questionId, out questionPhrase);
+           // //if (isAutoMode == true)
+           // //{
+           // //    addRowToDtSession(currentQuestionId, lbl_currentQuestion.Text, Answer.NO);
+           // //    updateDtProbList();
+           // //    askNextQuestion();
+           // //}
+           // //else
+           // //{
+           // //    int questionId;
+           // //    string questionPhrase;
+           // //    getInformationAboutSelectedQuestion(out questionId, out questionPhrase);
 
-                addRowToDtSession(questionId, questionPhrase, Answer.NO);
-                updateDtProbList();
-            }
+           // //    addRowToDtSession(questionId, questionPhrase, Answer.NO);
+           // //    updateDtProbList();
+           // //}
+
+           // int questionId;
+           // string questionPhrase;
+           // getInformationAboutSelectedQuestion(out questionId, out questionPhrase);
+
+           // addRowToDtSession(questionId, questionPhrase, Answer.NO);
+           //// setStructureDtSession();
+           // updateDtProbList();
+
+
+           // if (isAutoMode == true)
+           // {
+           //     askNextQuestion();
+           // }
+           // else
+            // { }
+            #endregion
+            workWithAnswer(Answer.NO);
         }
 
         private void btn_dontKnow_Click(object sender, EventArgs e)
         {
-            ////currentPair.questionId = currentQuestionId;
-            ////currentPair.answer = Answer.DONTKNOW;
-            ////session.Add(currentPair);
+            #region musor
+            // //////currentPair.questionId = currentQuestionId;
+           // //////currentPair.answer = Answer.DONTKNOW;
+           // //////session.Add(currentPair);
 
-            //addRowToDtSession(currentQuestionId, lbl_currentQuestion.Text, Answer.DONTKNOW);
-            //updateDtProbList();
+           // ////addRowToDtSession(currentQuestionId, lbl_currentQuestion.Text, Answer.DONTKNOW);
+           // ////updateDtProbList();
 
-            //if (isAutoMode == true)
-            //    askNextQuestion();
+           // ////if (isAutoMode == true)
+           // ////    askNextQuestion();
 
 
-            if (isAutoMode == true)
-            {
-                addRowToDtSession(currentQuestionId, lbl_currentQuestion.Text, Answer.DONTKNOW);
-                updateDtProbList();
-                askNextQuestion();
-            }
-            else
-            {
-                int questionId;
-                string questionPhrase;
-                getInformationAboutSelectedQuestion(out questionId, out questionPhrase);
+           // //if (isAutoMode == true)
+           // //{
+           // //    addRowToDtSession(currentQuestionId, lbl_currentQuestion.Text, Answer.DONTKNOW);
+           // //    updateDtProbList();
+           // //    askNextQuestion();
+           // //}
+           // //else
+           // //{
+           // //    int questionId;
+           // //    string questionPhrase;
+           // //    getInformationAboutSelectedQuestion(out questionId, out questionPhrase);
 
-                addRowToDtSession(questionId, questionPhrase, Answer.DONTKNOW);
-                updateDtProbList();
-            }
+           // //    addRowToDtSession(questionId, questionPhrase, Answer.DONTKNOW);
+           // //    updateDtProbList();
+           // //}
+
+           // int questionId;
+           // string questionPhrase;
+           // getInformationAboutSelectedQuestion(out questionId, out questionPhrase);
+
+           // addRowToDtSession(questionId, questionPhrase, Answer.DONTKNOW);
+           //// setStructureDtSession();
+           // updateDtProbList();
+
+
+           // if (isAutoMode == true)
+           // {
+           //     askNextQuestion();
+           // }
+           // else
+            // { }
+            #endregion
+            workWithAnswer(Answer.DONTKNOW);
         }
 
         private void btn_noMatter_Click(object sender, EventArgs e)
         {
-            ////currentPair.questionId = currentQuestionId;
-            ////currentPair.answer = Answer.NOMATTER;
-            ////session.Add(currentPair);
+            #region musor
+            ////////currentPair.questionId = currentQuestionId;
+            ////////currentPair.answer = Answer.NOMATTER;
+            ////////session.Add(currentPair);
 
-            //addRowToDtSession(currentQuestionId, lbl_currentQuestion.Text, Answer.NOMATTER);
+            //////addRowToDtSession(currentQuestionId, lbl_currentQuestion.Text, Answer.NOMATTER);
 
+            //////updateDtProbList();
+            //////if (isAutoMode == true)
+            //////    askNextQuestion();
+
+            ////if (isAutoMode == true)
+            ////{
+            ////    addRowToDtSession(currentQuestionId, lbl_currentQuestion.Text, Answer.NOMATTER);
+            ////    updateDtProbList();
+            ////    askNextQuestion();
+            ////}
+            ////else
+            ////{
+            ////    int questionId;
+            ////    string questionPhrase;
+            ////    getInformationAboutSelectedQuestion(out questionId, out questionPhrase);
+
+            ////    addRowToDtSession(questionId, questionPhrase, Answer.NOMATTER);
+            ////    updateDtProbList();
+            ////}
+            //int questionId;
+            //string questionPhrase;
+            //getInformationAboutSelectedQuestion(out questionId, out questionPhrase);
+
+            //addRowToDtSession(questionId, questionPhrase, Answer.NOMATTER);
+            ////setStructureDtSession();
             //updateDtProbList();
+
+
             //if (isAutoMode == true)
+            //{
             //    askNextQuestion();
-
-            if (isAutoMode == true)
-            {
-                addRowToDtSession(currentQuestionId, lbl_currentQuestion.Text, Answer.NOMATTER);
-                updateDtProbList();
-                askNextQuestion();
-            }
-            else
-            {
-                int questionId;
-                string questionPhrase;
-                getInformationAboutSelectedQuestion(out questionId, out questionPhrase);
-
-                addRowToDtSession(questionId, questionPhrase, Answer.NOMATTER);
-                updateDtProbList();
-            }
+            //}
+            //else
+            //{ }
+            #endregion
+            workWithAnswer(Answer.NOMATTER);
         }
 
         private void btn_stop_Click(object sender, EventArgs e)
         {
             dtSession.Clear();
             //session.Clear();
-            currentQuestionId = 0;
+            currentQuestionId = -1;
             btn_start.Enabled = true;
             //gbManualMode.Enabled = true;
             isAutoMode = false;
@@ -505,6 +617,7 @@ namespace ES_classification
           //  btn_dontKnow.Enabled = false;
            // btn_noMatter.Enabled = false;
 
+           dgvQuestion.Enabled = true;
 
             getDataSetAndResetDGVquestion();
             getProbListAndSetIntoDGV();
@@ -558,8 +671,8 @@ namespace ES_classification
                 {
 
                     //foundRowsQuestionary = dSet.Tables["Questionary"].Select(selectStr);
-                    int idInQuestionary = (int)foundRowsQuestionary[0][0];
-                    int answerCount = (int)foundRowsQuestionary[0][answerId];
+                   // int idInQuestionary = (int)foundRowsQuestionary[0][0];
+                    //int answerCount = (int)foundRowsQuestionary[0][answerId];
                     string answerColumnName = WorkerWithAnswer.getColoumnNameByAnswerId(answerId);
                     //выполняю обновление базы
 
@@ -593,10 +706,10 @@ namespace ES_classification
 
             dbWorker.updateCountClassificationForOutcome(idOfOutcome);
         }
-
+        
         private void btnGoToKBEditForm_Click(object sender, EventArgs e)
         {
-            KBEditForm qef = new KBEditForm(this, dbWorker);
+            KBEditForm qef = new KBEditForm(this, dbWorker, webClient);
             qef.Visible = true;
             this.Enabled = false;
         }
@@ -807,7 +920,7 @@ namespace ES_classification
                 }
                 if (result == DialogResult.No)
                 {
-                    SelectOutcomeWindow sew = new SelectOutcomeWindow(this.dbWorker);
+                    SelectOutcomeWindow sew = new SelectOutcomeWindow(this.dbWorker,dSet.Tables["Outcome"]);
                     sew.Owner = this;
                     sew.ShowDialog();
 
@@ -838,8 +951,11 @@ namespace ES_classification
 
         private void btnDeleteQuestion_Click(object sender, EventArgs e)
         {
-            if (dgvSession.SelectedRows[0] == null)
+            if (dgvSession.SelectedRows.Count == 0)
+            {
+                MessageBox.Show("Не выбран элемент для удаления");
                 return;
+            }
             int questionId = (int)dgvSession.SelectedRows[0].Cells[0].Value;
 
             dtSession.Select("questionId = " + questionId)[0].Delete();
@@ -897,8 +1013,28 @@ namespace ES_classification
             questionPhrase = dgvQuestion.SelectedRows[0].Cells[1].Value.ToString();
         }
 
-    }
 
+
+
+
+
+        //private void fillDgvSession()
+        //{
+        //    dgvSession.DataSource = dtSession;
+
+        //    string[] colCaptionArray = getDtSessionColumnName(dtSession);
+
+        //    for (int i = 0; i < dtSession.Columns.Count; i++)
+        //    {
+        //        dgvSession.Columns[i].HeaderText = colCaptionArray[i];
+        //    }
+
+
+        //    //          dgvSession.Columns["questionId"].Visible = false;
+        //     //          dgvSession.Columns["answerId"].Visible = false;
+        //    dgvSession.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        //}
+    }
 }
 
 //TODO: 

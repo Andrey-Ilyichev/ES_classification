@@ -15,15 +15,17 @@ namespace ES_classification
         private DBWorker dbWorker;
         private bool isEditingMode;
         private int questionId;
-        private int previousQuestionString;
+       // private int previousQuestionString;
+        private ServiceReferenceForExpertSystem.WebServiceForExpertSystemSoapClient webClient;
 
         private DataTable dtFunctionalArea;
 
-        public AddQuestionForm(Form f, DBWorker dbWorker, bool isEditingMode, int questionId, string previousQuestionString)
+        public AddQuestionForm(Form f, DBWorker dbWorker, bool isEditingMode, int questionId, string previousQuestionString, ServiceReferenceForExpertSystem.WebServiceForExpertSystemSoapClient wClient)
         {
             InitializeComponent();
             this.motherForm = f;
             this.dbWorker = dbWorker;
+            this.webClient = wClient;
 
             this.isEditingMode = isEditingMode;
             this.questionId = questionId;
@@ -77,8 +79,10 @@ namespace ES_classification
             {
                 if (isEditingMode == false)
                 {
-                    dbWorker.addNewQuestion(questionString, functionalAreaId);
-                    MessageBox.Show("Вопрос \"" + questionString + "\" успешно добавлен");
+                    string result = webClient.dbwAddNewQuestion(questionString, functionalAreaId);
+                    //dbWorker.addNewQuestion(questionString, functionalAreaId);
+                    MessageBox.Show(result);
+                    //MessageBox.Show("Вопрос \"" + questionString + "\" успешно добавлен");
                 }
                 else 
                 {

@@ -1,0 +1,4 @@
+E:\Синхронизация с Облаком mail.ru\ES_classification\WebApplicationForExpertSystem\bin\WebApplicationForExpertSystem.dll
+E:\Синхронизация с Облаком mail.ru\ES_classification\WebApplicationForExpertSystem\bin\WebApplicationForExpertSystem.pdb
+E:\Синхронизация с Облаком mail.ru\ES_classification\WebApplicationForExpertSystem\obj\Debug\WebApplicationForExpertSystem.dll
+E:\Синхронизация с Облаком mail.ru\ES_classification\WebApplicationForExpertSystem\obj\Debug\WebApplicationForExpertSystem.pdb

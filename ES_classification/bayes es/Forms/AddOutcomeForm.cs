@@ -15,7 +15,7 @@ namespace ES_classification
         private DBWorker dbWorker;
         private bool isEditingMode;
         private int outcomeId;
-        private string previousOutcomeString;
+        //private string previousOutcomeString;
 
         public AddOutcomeForm(Form f, DBWorker dbWorker, bool isEditing, int outcomeId, string previousOutcomeName)
         {

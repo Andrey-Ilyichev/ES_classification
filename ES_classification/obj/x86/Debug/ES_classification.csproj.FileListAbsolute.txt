@@ -28,4 +28,5 @@ E:\Синхронизация с Облаком mail.ru\ES_classification\ES_cla
 E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.form_edit_kb.resources
 E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.StartFormBayesES.resources
 E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\bin\Debug\Interop.ADOX.dll
-E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.csprojResolveAssemblyReference.cache
+E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\bin\Debug\ES_classification.exe.config
+E:\Синхронизация с Облаком mail.ru\ES_classification\ES_classification\obj\x86\Debug\ES_classification.Musor.MainFormPresenter.resources

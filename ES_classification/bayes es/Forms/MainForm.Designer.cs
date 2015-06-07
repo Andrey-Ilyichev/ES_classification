@@ -201,7 +201,6 @@
             // gbManualMode
             // 
             this.gbManualMode.Controls.Add(this.dgvSession);
-            this.gbManualMode.Enabled = false;
             this.gbManualMode.Location = new System.Drawing.Point(247, 532);
             this.gbManualMode.Name = "gbManualMode";
             this.gbManualMode.Size = new System.Drawing.Size(292, 208);
@@ -280,9 +279,9 @@
             // 
             // btnClearSession
             // 
-            this.btnClearSession.Location = new System.Drawing.Point(323, 347);
+            this.btnClearSession.Location = new System.Drawing.Point(281, 347);
             this.btnClearSession.Name = "btnClearSession";
-            this.btnClearSession.Size = new System.Drawing.Size(138, 23);
+            this.btnClearSession.Size = new System.Drawing.Size(217, 23);
             this.btnClearSession.TabIndex = 9;
             this.btnClearSession.Text = "Очистить список";
             this.btnClearSession.UseVisualStyleBackColor = true;
@@ -290,9 +289,9 @@
             // 
             // btnDeleteQuestion
             // 
-            this.btnDeleteQuestion.Location = new System.Drawing.Point(991, 624);
+            this.btnDeleteQuestion.Location = new System.Drawing.Point(281, 385);
             this.btnDeleteQuestion.Name = "btnDeleteQuestion";
-            this.btnDeleteQuestion.Size = new System.Drawing.Size(138, 23);
+            this.btnDeleteQuestion.Size = new System.Drawing.Size(217, 23);
             this.btnDeleteQuestion.TabIndex = 6;
             this.btnDeleteQuestion.Text = "Удалить вопрос";
             this.btnDeleteQuestion.UseVisualStyleBackColor = true;
@@ -380,7 +379,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(895, 752);
+            this.ClientSize = new System.Drawing.Size(890, 752);
             this.Controls.Add(this.btnClearSession);
             this.Controls.Add(this.gbAnswerManualMode);
             this.Controls.Add(this.gbAnswers);

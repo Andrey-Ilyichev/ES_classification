@@ -12,13 +12,15 @@ namespace ES_classification
     public partial class SelectOutcomeWindow : Form
     {
         private MainForm main;
-        public SelectOutcomeWindow(DBWorker dbWorker)
+        public SelectOutcomeWindow(DBWorker dbWorker, DataTable dtOutcome)
         {
             InitializeComponent();
 
-            DataSet dSetOutcome = dbWorker.getDataSetOutcome();
-            DataTable dTable = dSetOutcome.Tables[0];
-            dgvOutcome.DataSource = dTable;
+           // DataSet dSetOutcome = dbWorker.getDataSetOutcome();
+
+           // DataTable dTable = dbWorker.getDataTable
+                //dSetOutcome.Tables[0];
+            dgvOutcome.DataSource = dtOutcome;
            // dgvOutcome.DataSource = dbWorker.getDataSetOutcome().Tables[0];
             dgvOutcome.Columns[0].HeaderText = "#";
             dgvOutcome.Columns[0].Width = 25;

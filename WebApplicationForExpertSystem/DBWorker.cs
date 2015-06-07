@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Data.OleDb;
 using System.Data;
-using System.Windows.Forms;
+//using System.Windows.Forms;
 
-namespace ES_classification
+namespace WebApplicationForExpertSystem
 {
 
         public class DBWorker
@@ -87,27 +87,25 @@ namespace ES_classification
 
                 return dataSet;
             }
-            
 
-            /*//public DataSet getDataSetOutcome()
-            //{
-            //    DataSet dataSet = new DataSet();
-            //    connection.Open();
-            //    try
-            //    {
-            //        string sql = "select * from Outcome";
-            //        OleDbCommand command = new OleDbCommand(sql, connection);
-            //        OleDbDataAdapter dataAdapterOutcome = new OleDbDataAdapter(command);
-            //        dataAdapterOutcome.Fill(dataSet, "Outcome");
-            //    }
-            //    finally { connection.Close(); }
+            public DataSet getDataSetOutcome()
+            {
+                DataSet dataSet = new DataSet();
+                connection.Open();
+                try
+                {
+                    string sql = "select * from Outcome";
+                    OleDbCommand command = new OleDbCommand(sql, connection);
+                    OleDbDataAdapter dataAdapterOutcome = new OleDbDataAdapter(command);
+                    dataAdapterOutcome.Fill(dataSet, "Outcome");
+                }
+                finally { connection.Close(); }
 
 
-            //    return dataSet;
-            //}
-             */
+                return dataSet;
+            }
 
-            /*//public void update(DataSet ds)
+            //public void update(DataSet ds)
             //{
             //    try
             //    {
@@ -123,9 +121,8 @@ namespace ES_classification
             //        MessageBox.Show(ex.ToString());
             //    }
             //}
-             */
 
-            /*public void addNewQuestion(string questionString, int functionalAreaId)
+            public void addNewQuestion(string questionString, int functionalAreaId)
             {
                 try
                 {
@@ -148,7 +145,6 @@ namespace ES_classification
                     this.connection.Close();
                 }
             }
-             */
 
             public DataTable getDataTable(string tableName)
             {
@@ -161,7 +157,6 @@ namespace ES_classification
                 connection.Close();
                 return result;
             }
-             
 
             internal void formStructureOfKnowlegeBase()
             {
@@ -365,7 +360,8 @@ namespace ES_classification
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    return null;
+                    //MessageBox.Show(ex.Message);
                 }
                 finally 
                 {

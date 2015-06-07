@@ -36,6 +36,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -66,12 +68,19 @@
       <DependentUpon>AddOutcomeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="bayes es\DBWorker.cs" />
+    <Compile Include="Musor\MainFormPresenter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Musor\MainFormPresenter.Designer.cs">
+      <DependentUpon>MainFormPresenter.cs</DependentUpon>
+    </Compile>
     <Compile Include="bayes es\Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="bayes es\Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Musor\presenterBayesEsMainForm.cs" />
     <Compile Include="Pair.cs" />
     <Compile Include="production es\DBworker2.cs" />
     <Compile Include="production es\ES_form.cs">
@@ -112,6 +121,11 @@
     <Compile Include="bayes es\Forms\StartFormBayesES.Designer.cs">
       <DependentUpon>StartFormBayesES.cs</DependentUpon>
     </Compile>
+    <Compile Include="Service References\ServiceReferenceForExpertSystem\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="bayes es\Forms\AddFunctionalAreaForm.resx">
       <DependentUpon>AddFunctionalAreaForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -121,6 +135,9 @@
     <EmbeddedResource Include="bayes es\Forms\AddOutcomeForm.resx">
       <DependentUpon>AddOutcomeForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Musor\MainFormPresenter.resx">
+      <DependentUpon>MainFormPresenter.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="bayes es\Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -152,6 +169,8 @@
     <EmbeddedResource Include="bayes es\Forms\StartFormBayesES.resx">
       <DependentUpon>StartFormBayesES.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="Properties\DataSources\System.Data.DataSet.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -161,6 +180,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Service References\ServiceReferenceForExpertSystem\WebServiceForExpertSystem.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
@@ -176,7 +196,24 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadataStorage Include="Service References\ServiceReferenceForExpertSystem\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServiceReferenceForExpertSystem\WebServiceForExpertSystem.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServiceReferenceForExpertSystem\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServiceReferenceForExpertSystem\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Service References\ServiceReferenceForExpertSystem\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -15,19 +15,21 @@ namespace ES_classification
         private DBWorker dbWorker;
         DataTable dtQuestions;
         DataTable dtOutcome;
+        ServiceReferenceForExpertSystem.WebServiceForExpertSystemSoapClient webClient;
 
         /// <summary>
         /// //////////////////////////////////////////////////////
         /// </summary>
-        int nullId = 3;
+        //int nullId = 3;
         /// <summary>
         /// //////////////////////////////////////////////////////
 
-        public KBEditForm(Form f, DBWorker dbWorker)
+        public KBEditForm(Form f, DBWorker dbWorker, ServiceReferenceForExpertSystem.WebServiceForExpertSystemSoapClient wClient)
         {
             InitializeComponent();
             this.motherForm = f;
             this.dbWorker = dbWorker;
+            this.webClient = wClient;
 
             refreshDGVquestion();
             refreshDGVoutcome();
@@ -64,8 +66,11 @@ namespace ES_classification
         private void btnAddQuestion_Click(object sender, EventArgs e)
         {
             this.Enabled = false;
-            AddQuestionForm aqf = new AddQuestionForm(this, this.dbWorker, false, 0, null);// new AddQuestionForm(this, this.dbWorker);
-            aqf.Visible = true;
+            AddQuestionForm aqf = new AddQuestionForm(this, this.dbWorker, false, 0, null, webClient);// new AddQuestionForm(this, this.dbWorker);
+            //aqf.Visible = true;
+
+            aqf.ShowDialog();
+            updateCmbFunctionalArea();
         }
 
         private void btnEndOfWork_Click(object sender, EventArgs e)
@@ -96,8 +101,9 @@ namespace ES_classification
 
 
             this.Enabled = false;
-            AddQuestionForm aof = new AddQuestionForm(this, this.dbWorker, true, selectedId, questionPhrase);
-            aof.ShowDialog();
+            AddQuestionForm aqf = new AddQuestionForm(this, this.dbWorker, true, selectedId, questionPhrase.TrimEnd(), webClient);
+            aqf.ShowDialog();
+            updateCmbFunctionalArea();
         }
 
         private void btnAddQuestion_EnabledChanged(object sender, EventArgs e)
@@ -158,11 +164,11 @@ namespace ES_classification
             {
                 cmbFunctionalArea.Enabled = true;
                 int faId = (int)cmbFunctionalArea.SelectedValue;
-                if (faId == nullId)
-                    dgvQuestion.DataSource = new DataView(dtQuestions, "functionalAreaId IS NULL", "", DataViewRowState.CurrentRows);
+                //if (faId == nullId)
+                //    dgvQuestion.DataSource = new DataView(dtQuestions, "functionalAreaId IS NULL", "", DataViewRowState.CurrentRows);
 
                        // dtQuestions.Select("functionalAreaId IS NULL");
-                else
+               // else
                     dgvQuestion.DataSource = new DataView(dtQuestions, "functionalAreaId = " + faId, "", DataViewRowState.CurrentRows);
                         //dtQuestions.Select(string.Format("functionalAreaId = {0}", faId));
             }

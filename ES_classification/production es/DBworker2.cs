@@ -38,7 +38,7 @@ namespace ES_classification
             OleDbCommand command = new OleDbCommand(sql, connection);
             command.ExecuteNonQuery();
             command = null;
-            MessageBox.Show("Структура базы знаний создана");
+            //MessageBox.Show("Структура базы знаний создана");
         }
 
         public DataSet getDataSet()
